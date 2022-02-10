@@ -32,7 +32,7 @@ namespace Shop.Memory
             return _products.Where(c => c.Price >= lowPrice && c.Price<= highPrice).ToList();
         }
 
-        public bool AddProduct(Product model)
+        public bool AddProduct(in Product model)
         {
             try
             {
@@ -62,11 +62,12 @@ namespace Shop.Memory
             return _products.Any(c => c.ProductId == productId);
         }
 
-        public bool UpdateProduct(Product model)
+        public bool UpdateProduct(in Product model)
         {
             try
             {
-                var product = _products.FirstOrDefault(c => c.ProductId == model.ProductId);
+                var productId = model.ProductId;
+                var product = _products.FirstOrDefault(c => c.ProductId == productId);
 
                 product = new Product(model.ProductId, model.Name, model.Price, model.Description);
 
