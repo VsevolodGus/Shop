@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace Shop.Memory
 {
-    public class ProductRepository
+    public class ProductRepository : IProductRepository
     {
         private readonly List<Product> _products;
 
@@ -32,9 +32,17 @@ namespace Shop.Memory
             return _products.Where(c => c.Price >= lowPrice && c.Price<= highPrice).ToList();
         }
 
-        public void AddProduct(Product model)
+        public bool AddProduct(Product model)
         {
-            _products.Add(model);
+            try
+            {
+                _products.Add(model);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         public bool RemoveProductById(Guid Id)
@@ -49,6 +57,25 @@ namespace Shop.Memory
             return true;
         }
 
+        public bool IsExistProduct(Guid productId)
+        {
+            return _products.Any(c => c.ProductId == productId);
+        }
 
+        public bool UpdateProduct(Product model)
+        {
+            try
+            {
+                var product = _products.FirstOrDefault(c => c.ProductId == model.ProductId);
+
+                product = new Product(model.ProductId, model.Name, model.Price, model.Description);
+
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
     }
 }

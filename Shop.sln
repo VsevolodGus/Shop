@@ -3,11 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30114.105
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shop", "domain\Shop\Shop.csproj", "{4C02E0BB-7C0F-4F0E-99B1-FAA15C7CACA2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shop", "domain\Shop\Shop.csproj", "{4C02E0BB-7C0F-4F0E-99B1-FAA15C7CACA2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shope.API", "web\Shope.API\Shope.API.csproj", "{DB23841D-AC08-46DF-A94B-CD3B885BB5A8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shope.API", "web\Shope.API\Shope.API.csproj", "{DB23841D-AC08-46DF-A94B-CD3B885BB5A8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shop.Memory", "memory\Shop.Memory\Shop.Memory.csproj", "{7A205711-A220-418C-B4E4-6D0351D4497D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shop.Memory", "memory\Shop.Memory\Shop.Memory.csproj", "{7A205711-A220-418C-B4E4-6D0351D4497D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shop.App", "Shop.App\Shop.App.csproj", "{13DC28A1-8BA2-4FEC-8E38-A0834FD60F84}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{7A205711-A220-418C-B4E4-6D0351D4497D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7A205711-A220-418C-B4E4-6D0351D4497D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7A205711-A220-418C-B4E4-6D0351D4497D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{13DC28A1-8BA2-4FEC-8E38-A0834FD60F84}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{13DC28A1-8BA2-4FEC-8E38-A0834FD60F84}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{13DC28A1-8BA2-4FEC-8E38-A0834FD60F84}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{13DC28A1-8BA2-4FEC-8E38-A0834FD60F84}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
