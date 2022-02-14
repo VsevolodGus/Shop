@@ -6,10 +6,6 @@ using System.Threading.Tasks;
 
 namespace Shop
 {
-    //publiclass Buyer
-    //{
-    //}
-
     public class Buyer
     {
         public Guid BuyerId { get; set; }
@@ -21,5 +17,7 @@ namespace Shop
         public string Email { get; set; }
 
         public string NumberPhone { get; set; }
+
+        public bool IsDeleted { get; set; }
     }
 }

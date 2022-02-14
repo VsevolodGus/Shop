@@ -17,7 +17,7 @@ namespace Shop.Memory
 
         public Buyer GetBuyerById(Guid buyerId)
         {
-            return buyers.FirstOrDefault(c => c.BuyerId == buyerId);
+            return buyers.FirstOrDefault(c => c.BuyerId == buyerId && c.IsDeleted == false);
         }
 
 
