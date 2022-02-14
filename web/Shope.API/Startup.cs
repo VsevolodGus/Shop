@@ -1,5 +1,7 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -32,6 +34,15 @@ namespace Shope.API
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Shope.API", Version = "v1" });
             });
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                    .AddCookie(options =>
+                    {
+                        options.LoginPath = "/login";
+                        options.AccessDeniedPath = "/accessdenied";
+                    });
+
+
+            services.AddAuthorization();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -49,11 +60,12 @@ namespace Shope.API
             app.UseRouting();
 
             app.UseAuthorization();
-
+            app.UseAuthentication();   // добавление middleware аутентификации 
+            
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
-            });
+            });           
         }
     }
 }
