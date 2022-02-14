@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Shop.Memory
 {
-    public class BuyerRepository
+    public class BuyerRepository : IBuyerRepository
     {
         private List<Buyer> buyers;
 
@@ -20,6 +20,9 @@ namespace Shop.Memory
             return buyers.FirstOrDefault(c => c.BuyerId == buyerId);
         }
 
-
+        public bool AuthenficationBuyer(string login, string password)
+        {
+            return buyers.Any(c => (c.Email == login || c.NumberPhone == login) && c.Password == password);
+        }
     }
 }

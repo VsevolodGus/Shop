@@ -15,18 +15,26 @@ namespace Shope.API.Controllers
     {
         private ProductService _productService;
         private SalePointService _salePointService;
-
         public SearchController(ProductService productRepository, SalePointService salePointService)
         {
             this._productService = productRepository;
             this._salePointService = salePointService;
         }
-
         #region Продукты, услуги, товары
-        
+
         [HttpGet]
         public IActionResult GetProduct(Guid productId)
         {
+            var asd = this.HttpContext.Request.Form;
+            if (!asd.ContainsKey("login") && !asd.ContainsKey("password") && BuyerServiceAuth.Authenfication(asd["login"], asd["password"]))
+            {
+                return JsonCommonApiResult(new
+                {
+                    errorText = "Не авторизован",
+                    errorCode = 201,
+                });
+            }
+               
             var product = _productService.GetProductById(productId);
 
             return JsonCommonApiResult(new
