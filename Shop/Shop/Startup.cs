@@ -12,6 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using Shop.Manager;
 using Shop.Memory;
 using System;
 using System.Collections.Generic;
@@ -43,10 +44,10 @@ namespace Shop
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                     .AddCookie();
 
-            services.AddEfRepositories(Configuration.GetConnectionString("Shop"));
+            services.AddEfRepositories(Configuration);
             services.AddSwaggerGen(opt =>
             {
-                opt.SwaggerDoc("v1", new OpenApiInfo { Title = "MyAPI", Version = "v1" });
+                opt.SwaggerDoc("v1", new OpenApiInfo { Title = "ShopAPI", Version = "v1" });
                 opt.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
                     In = ParameterLocation.Header,
@@ -70,7 +71,13 @@ namespace Shop
                         new string[]{}
                     }
                 });
+                opt.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
             });
+
+            services.AddSingleton<SaleService>();
+            services.AddSingleton<SalePointService>();
+            services.AddSingleton<UserService>();
+            services.AddSingleton<ProductService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

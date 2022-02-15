@@ -10,13 +10,18 @@ namespace Shop.Domain.DTO
     public class UserDto
     {
         [Key]
-        public Guid Id { get; set; }
+        public Guid Id { get; init; }
 
         [Required]
+        [MaxLength(100)]
         public string Name { get; set; }
 
         [Required]
-        public string Password { get; set; }
+        [MaxLength(100)]
+        public string Password { get; init; }
 
+        public string Email { get; set; }
+
+        public string NumberPhone { get; set; }
     }
 }

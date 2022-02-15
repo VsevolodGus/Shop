@@ -9,7 +9,7 @@ namespace Shop.Domain.DTO
     public class ProductDto
     {
         [Key]
-        public Guid ProductId { get; set; }
+        public Guid ProductId { get; init; }
 
         
         [Required]

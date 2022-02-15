@@ -19,7 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Shop.Memory\Shop.Memory.csproj" />
+    <ProjectReference Include="..\Shop.Manager\Shop.Manager.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,19 +1,39 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Shop.Domain.DTO;
+using System;
 
 namespace Shop.Domain.Model
 {
     public class Product
     {
-        public Guid ProductId { get; set; }
+        private readonly ProductDto _productDto;
 
-        public string Name { get; set; }
+        public Product(ProductDto productDto)
+        {
+            this._productDto = productDto;
+        }
+        public Guid ProductId 
+        {
+            get => _productDto.ProductId;
+        }
 
-        public decimal Price { get; set; }
+        public string Name 
+        {
+            get => _productDto.Name;
+            set => _productDto.Name = value;
+        }
 
-        
+        public decimal Price 
+        {
+            get => _productDto.Price;
+            set => _productDto.Price = value;
+        }
+
+
+        public static class Mapper
+        {
+            public static Product Map(ProductDto dto) => new Product(dto);
+
+            public static ProductDto Map(Product domain) => domain._productDto;
+        }
     }
 }

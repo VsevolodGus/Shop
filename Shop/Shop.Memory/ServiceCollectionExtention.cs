@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Shop.Domain.InterfaceRepository;
 using Shop.Memory.Repository;
@@ -12,12 +13,12 @@ namespace Shop.Memory
 {
     public static class ServiceCollectionExtention
     {
-        public static IServiceCollection AddEfRepositories(this IServiceCollection services, string connectionString)
+        public static IServiceCollection AddEfRepositories(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddDbContext<ShopDbContext>(
                 options =>
                 {
-                    options.UseSqlServer(connectionString);
+                    options.UseSqlServer(configuration.GetConnectionString("Shop"));
                 },
                 ServiceLifetime.Transient
             );
@@ -28,7 +29,8 @@ namespace Shop.Memory
 
             services.AddSingleton<IUserRepository, UserRepository>();
             services.AddSingleton<IProductRepository, ProductRepository>();
-
+            services.AddSingleton<ISalePointRepository, SalePointRepository>();
+            services.AddSingleton<ISaleRepository, SaleRepository>();
 
             return services;
         }

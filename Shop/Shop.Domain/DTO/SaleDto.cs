@@ -15,23 +15,23 @@ namespace Shop.Domain.DTO
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public long PKID { get; init; }
 
-        // сюда записывать только DateTime.Date
         [Required]
-        public DateTime Date { get; init; }
+        public DateTime Date { get; set; }
 
         [Required]
         public Guid SalePointId { get; init; }
 
         public Guid? UserId { get; init; }
 
-        [DefaultValue(0)]
-        public decimal TotalAmount { get; init; }
+        [DefaultValue(false)]
+        public bool IsChanled { get; set; } 
 
         public virtual SalePointDto SalePoint {get; init;}
 
         public virtual UserDto User { get; init; }
 
         public ICollection<SalesDataDto> SalesDatas { get; init; }
+        
     }
 
 

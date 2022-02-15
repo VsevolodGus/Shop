@@ -1,23 +1,51 @@
-﻿using System;
+﻿using Shop.Domain.DTO;
+using System;
+using System.ComponentModel.DataAnnotations;
+using AutoMapper;
 
 namespace Shop.Domain
 {
     public class User
     {
-        public Guid Id { get; set; }
+        private readonly UserDto _userDto;
 
-        public string Name { get; set; }
-
-        public string Password { get; set; }
-
-        public User(string name, string password)
+        public User(UserDto userDto)
         {
-            this.Id = Guid.NewGuid();
-            this.Name = name;
-            this.Password = password;
+            this._userDto = userDto;
+        }
+        public Guid Id { get => _userDto.Id; }
+
+        public string Name 
+        { 
+            get => _userDto.Name;
+            set => _userDto.Name = value;
         }
 
-        public User()
-        {}
+        [RegularExpression(@"^[a-zA-Z0-9]+\@[a-z]{2,15}\.[a-z]{2,5}$")]
+        public string Email 
+        {
+            get => _userDto.Email;
+            set => _userDto.Email = value; 
+        }
+
+        [RegularExpression(@"/(?:\+|\d)[\d\-\(\) ]{9,}\d/g")]
+        public string NumberPhone
+        {
+            get => _userDto.NumberPhone;
+            set => _userDto.NumberPhone = value;
+        }
+        public string Password 
+        { 
+            get => _userDto.Password; 
+        }
+
+
+        public static class Mapper
+        {
+            public static User Map(UserDto dto) => new User(dto);
+
+            public static UserDto Map(User domain) => domain._userDto;
+        }
+
     }
 }

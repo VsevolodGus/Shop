@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -13,9 +14,12 @@ namespace Shop.Domain.DTO
         [Key]
         public Guid Id { get; init; }
 
-        public string Name { get; init; }
+        [Required]
+        [MaxLength(200)]
+        public string Name { get; set; }
 
-        public string Address { get; init; }
+        [MaxLength(200)]
+        public string Address { get; set; }
 
         public ICollection<ProvidedProductDto> ProvidedProducts { get; set; }
     }
@@ -25,15 +29,16 @@ namespace Shop.Domain.DTO
         [Key]
         public long PKID { get; init; }
 
-        //[Key, Column(Order = 0)]
+        
         [Required]
         public Guid SalePointId { get; init; }
 
-        //[Key, Column(Order = 1)]
+        
         [Required]
         public Guid ProductId { get; init; }
 
-        public int Count { get; init; }
+        [DefaultValue(0)]
+        public long Count { get; set; }
 
         public virtual SalePointDto SalePoint { get; init; }
 
