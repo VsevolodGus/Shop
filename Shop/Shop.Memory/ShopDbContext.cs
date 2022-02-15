@@ -1,25 +1,20 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Shop.Domain;
 using Shop.Domain.DTO;
-using Shop.Domain.Model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Shop.Memory
 {
-    class ShopDbContext : DbContext
+    public class ShopDbContext : DbContext
     {
-        public DbSet<User> Users { get; set; }
+        public DbSet<UserDto> Users { get; set; }
         public DbSet<ProductDto> Products{ get; set; }
+        public DbSet<ProvidedProductDto> ProvidedProducts { get; set; }
+        public DbSet<SalePointDto> SalePoints { get; set; }
+        public DbSet<SaleDto> Sales { get; set; }
+        public DbSet<SalesDataDto> SalesDatas { get; set; }
+
 
         public ShopDbContext(DbContextOptions<ShopDbContext> options) : base(options)
         { }
-
-        //public ShopDbContext()
-        //{ }
 
         //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         //{

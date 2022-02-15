@@ -1,17 +1,14 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.Owin.Security;
 using Shop.Domain;
+using Shop.Domain.InterfaceRepository;
 using Swashbuckle.AspNetCore.Annotations;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Net;
 using System.Security.Claims;
 using System.Text;
@@ -20,31 +17,27 @@ using System.Threading.Tasks;
 
 namespace Shop.Controllers
 {
-    
     [Route("api/[controller]")]
     [ApiController]
     public class AuthConroller : BaseShopController
     {
-        private List<User> users = new List<User>
+        private readonly IUserRepository _userRepository;
+
+        public AuthConroller(IUserRepository userRepository)
         {
-            new User()
-            {
-                Id = Guid.NewGuid(),
-                Name = "asd",
-                Password = "asd",
-            }
-        };
+            this._userRepository = userRepository;
+        }
 
         [SwaggerResponse((int)HttpStatusCode.OK)]
         [HttpPost, Route("login")]
-        public IActionResult Login(LoginModel model)
+        public async Task<IActionResult> Login(LoginModel model)
         {
             if (model == null)
             {
                 return BadRequest("Invalid client request");
             }
 
-            var user = users.FirstOrDefault(c => c.Name == model.UserName && c.Password == model.Password);
+            var user = await _userRepository.GetUserForLogin(model.UserName, model.Password);
 
             if (user is not null)
             {
@@ -82,9 +75,8 @@ namespace Shop.Controllers
         [HttpPost, Route("registr")]
         public async Task<IActionResult> Registr(LoginModel model)
         {
-            // добавление в базу
-
-            return this.Login(model);
+            await _userRepository.AddUser(model.UserName, model.Password);
+            return await Login(model);
         }
     }
 }

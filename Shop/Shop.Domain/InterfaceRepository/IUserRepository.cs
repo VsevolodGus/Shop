@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using Shop.Domain.DTO;
 using System.Threading.Tasks;
 
 namespace Shop.Domain.InterfaceRepository
 {
     public interface IUserRepository
     {
-        bool AddUser(string name, string password);
+        Task<bool> AddUser(string name, string password);
+
+        Task<UserDto> GetUserForLogin(string name, string password);
     }
 }

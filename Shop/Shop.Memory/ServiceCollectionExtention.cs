@@ -22,7 +22,13 @@ namespace Shop.Memory
                 ServiceLifetime.Transient
             );
 
+            //для доступа к базе
+            services.AddScoped<Dictionary<Type, ShopDbContext>>();
+            services.AddSingleton<DbContextFactory>();
+
             services.AddSingleton<IUserRepository, UserRepository>();
+            services.AddSingleton<IProductRepository, ProductRepository>();
+
 
             return services;
         }

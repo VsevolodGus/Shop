@@ -35,11 +35,14 @@ namespace Shop
 
             services.AddControllers();
 
+            services.AddHttpContextAccessor();
             services.AddDistributedMemoryCache();
+            services.AddSession();
+
             services.AddAuthorization();
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                     .AddCookie();
-            services.AddSession();
+
             services.AddEfRepositories(Configuration.GetConnectionString("Shop"));
             services.AddSwaggerGen(opt =>
             {
