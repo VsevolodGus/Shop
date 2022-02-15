@@ -25,8 +25,6 @@ namespace Shop.Controllers
     [ApiController]
     public class AuthConroller : BaseShopController
     {
-        private string _auth;
-
         private List<User> users = new List<User>
         {
             new User()
@@ -37,40 +35,7 @@ namespace Shop.Controllers
             }
         };
 
-
-        
-
-
-        [NonAction]
-        private bool Authorization(LoginModel model, out Guid userId)
-        {
-            userId = Guid.Empty;
-
-            if (users.Any(c => c.Name == model.UserName && c.Password == model.Password))
-            {
-                var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("superSecretKey@2410"));
-                var signinCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
-                var tokenOptions = new JwtSecurityToken(
-                    issuer: "CodeMaze",
-                    audience: "https://localhost:44386",
-                    claims: new List<Claim>(),
-                    expires: DateTime.Now.AddMinutes(5),
-                    signingCredentials: signinCredentials
-                );
-                _auth = new JwtSecurityTokenHandler().WriteToken(tokenOptions);
-
-                userId = users.Where(c => c.Name == model.UserName && c.Password == model.Password)
-                              .Select(c => c.Id)
-                              .FirstOrDefault();
-
-                return true;
-            }
-
-            
-            return false;
-        }
-
-
+        [SwaggerResponse((int)HttpStatusCode.OK)]
         [HttpPost, Route("login")]
         public IActionResult Login(LoginModel model)
         {
@@ -112,7 +77,15 @@ namespace Shop.Controllers
             return Content("OK");
         }
 
-        
+
+        [SwaggerResponse((int)HttpStatusCode.OK)]
+        [HttpPost, Route("registr")]
+        public async Task<IActionResult> Registr(LoginModel model)
+        {
+            // добавление в базу
+
+            return this.Login(model);
+        }
     }
 }
 

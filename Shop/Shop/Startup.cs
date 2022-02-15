@@ -12,6 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using Shop.Memory;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,12 +34,13 @@ namespace Shop
         {
 
             services.AddControllers();
-            
 
+            services.AddDistributedMemoryCache();
             services.AddAuthorization();
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                     .AddCookie();
-
+            services.AddSession();
+            services.AddEfRepositories(Configuration.GetConnectionString("Shop"));
             services.AddSwaggerGen(opt =>
             {
                 opt.SwaggerDoc("v1", new OpenApiInfo { Title = "MyAPI", Version = "v1" });
@@ -82,9 +84,11 @@ namespace Shop
             app.UseHttpsRedirection();
 
             app.UseRouting();
+            app.UseSession();
 
             app.UseAuthentication();
             app.UseAuthorization();
+            
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

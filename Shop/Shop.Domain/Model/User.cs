@@ -14,5 +14,14 @@ namespace Shop.Domain
 
         public string Password { get; set; }
 
+        public User(string name, string password)
+        {
+            this.Id = Guid.NewGuid();
+            this.Name = name;
+            this.Password = password;
+        }
+
+        public User()
+        {}
     }
 }

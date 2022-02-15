@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Shop.Domain
+namespace Shop.Domain.InterfaceRepository
 {
-    interface IUserRepository
+    public interface IUserRepository
     {
-        
+        bool AddUser(string name, string password);
     }
 }
