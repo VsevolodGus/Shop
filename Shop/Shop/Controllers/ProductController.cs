@@ -22,7 +22,7 @@ namespace Shop.Controllers
 
 
         [HttpPost]
-        [Route("")]
+        [Route("product/set")]
         public async Task<IActionResult> SetProduct([FromBody] ProductDto model)
         {
             var result = await _productService.SetProduct(model);
@@ -46,7 +46,7 @@ namespace Shop.Controllers
         }
 
         [HttpGet]
-        [Route("")]
+        [Route("product/byid")]
         public async Task<IActionResult> GetProductById(Guid productId)
         {
             var result = await _productService.GetProductById(productId);
@@ -59,7 +59,7 @@ namespace Shop.Controllers
         }
 
         [HttpGet]
-        [Route("")]
+        [Route("product/search")]
         public async Task<IActionResult> GetProductBySearch(string search, int skipCount = 0, int count = 10)
         {
             var result = await _productService.GetProductBySearch(search, skipCount, count);
@@ -73,7 +73,7 @@ namespace Shop.Controllers
 
 
         [HttpGet]
-        [Route("")]
+        [Route("product/salepoint")]
         public async Task<IActionResult> GetProductBySalePoiny(Guid salePointId, string search, int skipCount = 0, int count = 10)
         {
             var result = await _productService.GetProductBySalePoint(salePointId, search, skipCount, count);

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Shop.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/sale")]
     [ApiController]
     public class SaleController : BaseShopController
     {
@@ -19,15 +19,11 @@ namespace Shop.Controllers
         {
             this._saleManager = saleManager;
         }
+        
 
-        //public async Task<IActionResult> SetProductInCart(Guid productId)
-        //{
-        //    _saleManager.GetSaleAsync()
-        //    return null;
-        //}
-
-
-        public async Task<IActionResult> GetSales([FromQuery] SalesFilter filter, int skipCount =0, int count =10)
+        [HttpGet]
+        [Route("list")]
+        public async Task<IActionResult> GetSales([FromQuery] SalesFilter filter, int skipCount = 0, int count = 10)
         {
             var result = await _saleManager.GetSales(filter, skipCount, count);
             return JsonCommonApiResult(new
