@@ -19,11 +19,11 @@ namespace Shop.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AuthConroller : BaseShopController
+    public class UserConroller : BaseShopController
     {
         private readonly IUserRepository _userRepository;
 
-        public AuthConroller(IUserRepository userRepository)
+        public UserConroller(IUserRepository userRepository)
         {
             this._userRepository = userRepository;
         }

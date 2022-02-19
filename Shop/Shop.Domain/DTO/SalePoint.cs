@@ -31,7 +31,7 @@ namespace Shop.Domain.DTO
 
         
         [Required]
-        public Guid SalePointId { get; init; }
+        public Guid SalePointId { get; set; }
 
         
         [Required]

@@ -27,26 +27,29 @@ namespace Shop.Memory.Repository
             }
         }
 
-        public async Task<List<SaleDto>> GetSaleByUser(Guid? userId, Guid? salePoint, string search, int skipCount, int count)
+        public async Task<List<SaleDto>> GetSales(bool allUsers, Guid? userId, string search, Guid? salePoinId, int skipCount, int count)
         {
             using (var dc = dbContextFactory.Create(typeof(UserRepository)))
             {
                 var query = dc.Sales.Where(c => c.IsChanled == false);
 
                 #region Фильтрация по юзеру 
-                if (userId.HasValue)
+                if (!allUsers)
                 {
-                    query = query.Where(c => c.UserId == userId.Value);
-                }
-                else
-                {
-                    query = query.Where(c => c.UserId == null);
+                    if (userId.HasValue)
+                    {
+                        query = query.Where(c => c.UserId == userId.Value);
+                    }
+                    else
+                    {
+                        query = query.Where(c => c.UserId == null);
+                    }
                 }
                 #endregion
 
-                if (salePoint.HasValue)
+                if (salePoinId.HasValue)
                 {
-                    query = query.Where(c => c.SalePointId == salePoint.Value);
+                    query = query.Where(c => c.SalePointId == salePoinId.Value);
                 }
                 
 

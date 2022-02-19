@@ -8,38 +8,13 @@ using System.Threading.Tasks;
 
 namespace Shop.Manager
 {
-    public class ProductService
+    public class ProductManager
     {
         private readonly IProductRepository _productRepository;
 
-        public ProductService(IProductRepository productRepository)
+        public ProductManager(IProductRepository productRepository)
         {
             this._productRepository = productRepository;
-        }
-
-        public async Task<bool> SetNewProduct(ProductDto product)
-        {
-            try
-            {
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
-
-        public async Task<bool> UpdateProduct(ProductDto product)
-        {
-            try
-            {
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
         }
 
 
@@ -63,5 +38,21 @@ namespace Shop.Manager
             }
         }
 
+
+
+        public async Task<List<ProductDto>> GetProductBySalePoint(Guid salePointId, string search, int skipCount, int count)
+        {
+            return await _productRepository.GetProductsBySalePoint(salePointId, search, skipCount, count);
+        }
+
+        public async Task<List<ProductDto>> GetProductBySearch(string search, int skipCount, int count)
+        {
+            return await _productRepository.GetProductByTitleOrDescription(search, skipCount, count);
+        }
+
+        public async Task<ProductDto> GetProductById(Guid productId)
+        {
+            return await _productRepository.GetProductById(productId);
+        }
     }
 }

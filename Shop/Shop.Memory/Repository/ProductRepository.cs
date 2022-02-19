@@ -30,7 +30,9 @@ namespace Shop.Memory.Repository
             using (var dc = dbContextFactory.Create(typeof(ProductRepository)))
             {
                 var queryProductList = dc.SalePoints.Where(c => c.Id == salePointId)
-                                                    .SelectMany(v => v.ProvidedProducts.Select(c=> c.Product));
+                                                    .SelectMany(v => v.ProvidedProducts.Where(c=> c.Count > 0)
+                                                                                       .Select(c => c.Product)
+                                                                                       );
 
                 if (!string.IsNullOrEmpty(search))
                 {

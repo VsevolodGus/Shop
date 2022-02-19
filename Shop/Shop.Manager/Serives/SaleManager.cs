@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Shop.Domain.DTO;
 using Shop.Domain.InterfaceRepository;
 using Shop.Domain.Model;
 using Shop.Manager.Models;
@@ -8,12 +9,12 @@ using System.Threading.Tasks;
 
 namespace Shop.Manager
 {
-    public class SaleService
+    public class SaleManager
     {
         private readonly ISaleRepository _saleRepository;
         private readonly IHttpContextAccessor _httpContextAccessor;
         protected ISession Session => _httpContextAccessor.HttpContext.Session;
-        public SaleService(ISaleRepository saleRepository, IHttpContextAccessor httpContextAccessor)
+        public SaleManager(ISaleRepository saleRepository, IHttpContextAccessor httpContextAccessor)
         {
             this._saleRepository = saleRepository;
             this._httpContextAccessor = httpContextAccessor;
@@ -35,7 +36,7 @@ namespace Shop.Manager
             return false;
         }
 
-        internal async Task<(bool hasValue, Sale order)> TryGetOrderAsync()
+        internal async Task<(bool hasValue, Sale order)> TryGetSakeAsync()
         {
             if (Session.TryGetCart(out Cart cart))
             {
@@ -61,10 +62,16 @@ namespace Shop.Manager
             return null;
         }
 
-        void UpdateSession(Sale sale)
+        private void UpdateSession(Sale sale)
         {
             var cart = new Cart(sale.SaleId, sale.TotalCount, sale.TotalAmount);
             Session.Set(cart);
+        }
+
+
+        public async Task<List<SaleDto>> GetSales(SalesFilter filter, int skipCount, int count)
+        {
+            return await _saleRepository.GetSales(filter.AllUser, filter.UserId, filter.Search, filter.SalePointId, skipCount, count);
         }
 
     }
