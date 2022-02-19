@@ -1,7 +1,6 @@
-﻿using Shop.Domain.DTO;
-using System;
+﻿using System;
 using System.ComponentModel.DataAnnotations;
-using AutoMapper;
+using Shop.Domain.DTO;
 
 namespace Shop.Domain
 {

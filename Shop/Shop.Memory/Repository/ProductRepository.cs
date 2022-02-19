@@ -60,5 +60,37 @@ namespace Shop.Memory.Repository
                                              .ToListAsync();
             }
         }
+
+        public async Task<bool> AddProduct(ProductDto product)
+        {
+            using (var dc = dbContextFactory.Create(typeof(ProductRepository)))
+            {
+                bool IsExsistsProduct = await dc.Products.AnyAsync(c => c.IsDeleted == false && c.ProductId == product.ProductId);
+                if (IsExsistsProduct)
+                    return false;
+
+                await dc.Products.AddAsync(product);
+                await dc.SaveChangesAsync();
+                return true;
+            }
+        }
+
+        public async Task<bool> UpdateProduct(ProductDto model)
+        {
+            using (var dc = dbContextFactory.Create(typeof(ProductRepository)))
+            {
+                bool IsExsistsProduct = await dc.Products.AnyAsync(c => c.IsDeleted == false && c.ProductId == model.ProductId);
+                if (!IsExsistsProduct)
+                    return false;
+                
+                var oldModel  = await dc.Products.FirstOrDefaultAsync(c => c.IsDeleted == false && c.ProductId == model.ProductId);
+                oldModel.Name = model.Name;
+                oldModel.Price = model.Price;
+                oldModel.IsDeleted = model.IsDeleted;
+                await dc.SaveChangesAsync();
+
+                return true;
+            }
+        }
     }
 }

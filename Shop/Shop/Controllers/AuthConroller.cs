@@ -78,6 +78,15 @@ namespace Shop.Controllers
             await _userRepository.AddUser(model.UserName, model.Password);
             return await Login(model);
         }
+
+
+        [HttpPost, Route("delete")]
+        public async Task<IActionResult> DeleteAccountUser(Guid userId)
+        {
+            // g
+            // удаление
+            return null;
+        }
     }
 }
 

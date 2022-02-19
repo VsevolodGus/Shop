@@ -14,7 +14,7 @@ namespace Shop.Manager.Models
 
         public decimal TotalPrice { get; set; }
 
-        public Cart(int id, int totalCount, decimal totalPrice)
+        public Cart(long id, long totalCount, decimal totalPrice)
         {
             SaleId = id;
             TotalCount = totalCount;
