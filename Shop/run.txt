@@ -1,0 +1,2 @@
+Нужно поменять Connection в appsettings.json
+И применить миграции для новой базы Update-DataBase
