@@ -17,52 +17,50 @@ namespace Shop.Memory.Repository
         }
         public async Task<bool> AddUser(string name, string password)
         {
-            using (var dc = dbContextFactory.Create(typeof(UserRepository)))
-            {
-                try
-                {
-                    await dc.Users.AddAsync(new UserDto
-                    {
-                        Id = Guid.NewGuid(),
-                        Name = name,
-                        Password = password,
-                    });
-                    await dc.SaveChangesAsync();
+            var dc = dbContextFactory.Create(typeof(UserRepository));
 
-                    return true;
-                }
-                catch
+            try
+            {
+                await dc.Users.AddAsync(new UserDto
                 {
-                    return false;
-                }
+                    Id = Guid.NewGuid(),
+                    Name = name,
+                    Password = password,
+                });
+                await dc.SaveChangesAsync();
+
+                return true;
+            }
+            catch
+            {
+                return false;
             }
         }
 
         public async Task<bool> DeleteUserById(Guid userId)
         {
-            using (var dc = dbContextFactory.Create(typeof(UserRepository)))
-            {
+            var dc = dbContextFactory.Create(typeof(UserRepository));
+
+
                 var user = await dc.Users.Where(c => c.Id == userId && c.IsDeleted == false).FirstOrDefaultAsync();
-                if (user is not null)
-                {
-                    user.IsDeleted = false;
-                    await dc.SaveChangesAsync();
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
+            if (user is not null)
+            {
+                user.IsDeleted = false;
+                await dc.SaveChangesAsync();
+                return true;
+            }
+            else
+            {
+                return false;
             }
         }
 
         public async Task<UserDto> GetUserForLogin(string name, string password)
         {
-            using (var dc = dbContextFactory.Create(typeof(UserRepository)))
-            {
+            var dc = dbContextFactory.Create(typeof(UserRepository));
+
                 return await dc.Users.Where(c => c.Name == name && c.Password == password && c.IsDeleted == false)
                                .FirstOrDefaultAsync();
-            }
         }
 
 

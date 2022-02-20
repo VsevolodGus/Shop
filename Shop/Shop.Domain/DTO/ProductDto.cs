@@ -18,7 +18,6 @@ namespace Shop.Domain.DTO
         [DefaultValue(0)]
         public decimal Price { get; set; }
 
-        [Required]
         [DefaultValue(false)]
         public bool IsDeleted { get; set; }
     }

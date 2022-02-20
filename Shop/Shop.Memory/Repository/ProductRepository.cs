@@ -18,80 +18,76 @@ namespace Shop.Memory.Repository
         }
         public async Task<ProductDto> GetProductById(Guid productId)
         {
-            using (var dc = dbContextFactory.Create(typeof(ProductRepository)))
-            {
-                return await dc.Products.FirstOrDefaultAsync(c => c.ProductId == productId && c.IsDeleted == false);
-            }
+            var dc = dbContextFactory.Create(typeof(ProductRepository));
+            
+            return await dc.Products.FirstOrDefaultAsync(c => c.ProductId == productId && c.IsDeleted == false);
+            
         }
 
         public async Task<List<ProductDto>> GetProductsBySalePoint(Guid salePointId, string search, int skipCount, int count)
         {
-            using (var dc = dbContextFactory.Create(typeof(ProductRepository)))
+            var dc = dbContextFactory.Create(typeof(ProductRepository));
+
+            var queryProductList = dc.SalePoints.Where(c => c.Id == salePointId)
+                                                .SelectMany(v => v.ProvidedProducts.Where(c => c.Count > 0)
+                                                                                   .Select(c => c.Product)
+                                                                                   );
+
+            if (!string.IsNullOrEmpty(search))
             {
-                var queryProductList = dc.SalePoints.Where(c => c.Id == salePointId)
-                                                    .SelectMany(v => v.ProvidedProducts.Where(c => c.Count > 0)
-                                                                                       .Select(c => c.Product)
-                                                                                       );
-
-                if (!string.IsNullOrEmpty(search))
-                {
-                    queryProductList = queryProductList.Where(c => c.Name.Contains(search));
-                }
-
-                return await queryProductList.OrderBy(c => c.Price)
-                                             .Skip(skipCount).Take(count)
-                                             .ToListAsync();
-
+                queryProductList = queryProductList.Where(c => c.Name.Contains(search));
             }
+
+            return await queryProductList.OrderBy(c => c.Price)
+                                         .Skip(skipCount).Take(count)
+                                         .ToListAsync();
         }
 
         public async Task<List<ProductDto>> GetProductByTitleOrDescription(string search, int skipCount, int count)
         {
-            using (var dc = dbContextFactory.Create(typeof(ProductRepository)))
+            var dc = dbContextFactory.Create(typeof(ProductRepository));
+
+            var queryProductList = dc.Products.Where(c => c.IsDeleted == false);
+
+            if (!string.IsNullOrEmpty(search))
             {
-                var queryProductList = dc.Products.Where(c => c.IsDeleted == false);
-
-                if (!string.IsNullOrEmpty(search))
-                {
-                    queryProductList = queryProductList.Where(c => c.Name.Contains(search));
-                }
-
-                return await queryProductList.OrderBy(c => c.Price)
-                                             .Skip(skipCount).Take(count)
-                                             .ToListAsync();
+                queryProductList = queryProductList.Where(c => c.Name.Contains(search));
             }
+
+            return await queryProductList.OrderBy(c => c.Price)
+                                         .Skip(skipCount).Take(count)
+                                         .ToListAsync();
         }
 
         public async Task<bool> AddProduct(ProductDto product)
         {
-            using (var dc = dbContextFactory.Create(typeof(ProductRepository)))
-            {
-                bool IsExsistsProduct = await dc.Products.AnyAsync(c => c.IsDeleted == false && c.ProductId == product.ProductId);
-                if (IsExsistsProduct)
-                    return false;
+            var dc = dbContextFactory.Create(typeof(ProductRepository));
 
-                await dc.Products.AddAsync(product);
-                await dc.SaveChangesAsync();
-                return true;
-            }
+            bool IsExsistsProduct = await dc.Products.AnyAsync(c => c.IsDeleted == false && c.ProductId == product.ProductId);
+            if (IsExsistsProduct)
+                return false;
+
+            await dc.Products.AddAsync(product);
+            await dc.SaveChangesAsync();
+            return true;
+
         }
 
         public async Task<bool> UpdateProduct(ProductDto model)
         {
-            using (var dc = dbContextFactory.Create(typeof(ProductRepository)))
-            {
-                bool IsExsistsProduct = await dc.Products.AnyAsync(c => c.IsDeleted == false && c.ProductId == model.ProductId);
-                if (!IsExsistsProduct)
-                    return false;
+            var dc = dbContextFactory.Create(typeof(ProductRepository));
 
-                var oldModel = await dc.Products.FirstOrDefaultAsync(c => c.IsDeleted == false && c.ProductId == model.ProductId);
-                oldModel.Name = model.Name;
-                oldModel.Price = model.Price;
-                oldModel.IsDeleted = model.IsDeleted;
-                await dc.SaveChangesAsync();
+            bool IsExsistsProduct = await dc.Products.AnyAsync(c => c.IsDeleted == false && c.ProductId == model.ProductId);
+            if (!IsExsistsProduct)
+                return false;
 
-                return true;
-            }
+            var oldModel = await dc.Products.FirstOrDefaultAsync(c => c.IsDeleted == false && c.ProductId == model.ProductId);
+            oldModel.Name = model.Name;
+            oldModel.Price = model.Price;
+            oldModel.IsDeleted = model.IsDeleted;
+            await dc.SaveChangesAsync();
+
+            return true;
         }
     }
 }

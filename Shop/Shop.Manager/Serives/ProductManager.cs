@@ -19,21 +19,16 @@ namespace Shop.Manager
         public async Task<bool> SetProduct(ProductDto product)
         {
             var productExists = await _productRepository.GetProductById(product.ProductId);
-            try
+
+            if (productExists is null)
             {
-                if (productExists is null)
-                {
-                    return await _productRepository.AddProduct(product);
-                }
-                else
-                {
-                    return await _productRepository.UpdateProduct(product);
-                }
+                return await _productRepository.AddProduct(product);
             }
-            catch
+            else
             {
-                return false;
+                return await _productRepository.UpdateProduct(product);
             }
+
         }
 
 
