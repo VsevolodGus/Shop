@@ -1,6 +1,6 @@
-﻿using System;
+﻿using Shop.Domain.DTO;
+using System;
 using System.Threading.Tasks;
-using Shop.Domain.DTO;
 
 namespace Shop.Domain.InterfaceRepository
 {

@@ -9,8 +9,12 @@ namespace Shop.Manager.Models
         /// Key- Id продукта
         /// Value - добавляемое кол-во
         /// </summary>
-        public Dictionary<Guid, long> Products = new Dictionary<Guid, long>();
+        public Dictionary<Guid, long> Products { get; set; } = new Dictionary<Guid, long>();
 
-        public Guid? SalePointId;
+        public Guid? SalePointId { get; set; }
+
+        public Guid? UserId { get; set; }
+
+        public DateTime Date { get; set; } = DateTime.UtcNow;
     }
 }

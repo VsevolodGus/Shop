@@ -2,8 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Shop.Domain.Model
 {
@@ -13,7 +11,7 @@ namespace Shop.Domain.Model
 
         public Sale(SaleDto saleDto)
         {
-            this._saleDto = saleDto;            
+            this._saleDto = saleDto;
         }
 
         public DateTime Date
@@ -26,7 +24,7 @@ namespace Shop.Domain.Model
             }
         }
 
-        
+
         public TimeSpan Time
         {
             get => _saleDto.Date.TimeOfDay;
@@ -38,11 +36,24 @@ namespace Shop.Domain.Model
 
         public long SaleId { get => _saleDto.PKID; }
 
-        public decimal TotalAmount { get => _saleDto.SalesDatas.Sum(c => c.ProductIdAmount); }
+        public decimal TotalAmount { get => _saleDto.SalesDatas.Sum(c => c.ProductPrice * c.ProductQuantity); }
 
         public long TotalCount { get => _saleDto.SalesDatas.Sum(c => c.ProductQuantity); }
 
-        public SalePoint SalePoint { get; init; }
+        public bool IsCancel
+        {
+            get => _saleDto.IsChanled;
+            set => _saleDto.IsChanled = value;
+        }
+
+        public SalePoint SalePoint
+        {
+            get => SalePoint.Mapper.Map(_saleDto.SalePoint);
+            init => SalePoint.Mapper.Map(value);
+        }
+
+        public List<SalesDataDto> SaleDatas { get => _saleDto.SalesDatas.ToList(); }
+
 
 
         public static class Mapper
@@ -50,6 +61,41 @@ namespace Shop.Domain.Model
             public static Sale Map(SaleDto dto) => new Sale(dto);
 
             public static SaleDto Map(Sale domain) => domain._saleDto;
+        }
+
+
+        public void FillSale(Guid productId, long count, decimal price)
+        {
+            var saleProduct = _saleDto.SalesDatas.FirstOrDefault(c => c.ProductId == productId);
+
+            if (saleProduct is null)
+            {
+                var newProductSale = new SalesDataDto()
+                {
+                    SaleId = _saleDto.PKID,
+                    ProductId = productId,
+                    ProductPrice = price,
+                    ProductQuantity = count,
+                };
+                _saleDto.SalesDatas.Add(newProductSale);
+            }
+            else
+            {
+                saleProduct.ProductQuantity += count;
+            }
+        }
+
+        public void RemoveItem(Guid productId, long count, bool fullItems = false)
+        {
+            var saleProduct = _saleDto.SalesDatas.FirstOrDefault(c => c.ProductId == productId);
+
+            if (saleProduct is null)
+                return;
+
+            if (saleProduct.ProductQuantity <= count || fullItems)
+                _saleDto.SalesDatas.Remove(saleProduct);
+            else
+                saleProduct.ProductQuantity -= count;
         }
     }
 }

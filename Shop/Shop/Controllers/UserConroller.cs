@@ -1,18 +1,18 @@
-﻿using System;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
-using System.Security.Claims;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Http;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.AspNetCore.Authentication;
+﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Swashbuckle.AspNetCore.Annotations;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using Shop.Domain;
 using Shop.Domain.InterfaceRepository;
+using Swashbuckle.AspNetCore.Annotations;
+using System;
+using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
+using System.Net;
+using System.Security.Claims;
+using System.Text;
+using System.Threading.Tasks;
 
 
 namespace Shop.Controllers
@@ -91,7 +91,7 @@ namespace Shop.Controllers
         [HttpPost, Route("delete")]
         public async Task<IActionResult> DeleteAccountUser(Guid userId, string auth)
         {
-            if(!ChekAuthToken(auth, out Guid currentUserId) && currentUserId != userId) 
+            if (!ChekAuthToken(auth, out Guid currentUserId) && currentUserId != userId)
                 return Unauthorized();
 
             await _userRepository.DeleteUserById(userId);

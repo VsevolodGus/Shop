@@ -4,7 +4,6 @@ using Shop.Domain.InterfaceRepository;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Shop.Memory.Repository
@@ -18,7 +17,28 @@ namespace Shop.Memory.Repository
             this.dbContextFactory = dbContextFactory;
         }
 
-        public async Task<SaleDto> GetsaleByPKID(long saleId)
+        public async Task AddSale(SaleDto model)
+        {
+            using (var dc = dbContextFactory.Create(typeof(UserRepository)))
+            {
+                await dc.AddAsync(new SaleDto()
+                {
+                    SalePointId = model.SalePointId,
+                    UserId = model.UserId,
+                    Date = model.Date
+                });
+                await dc.SaveChangesAsync();
+
+
+                var sale = await dc.Sales.FirstOrDefaultAsync(c => c.IsChanled == false && c.SalePointId == model.SalePointId && c.Date == model.Date && c.UserId == model.UserId);
+                var itemSale = model.SalesDatas.ToList();
+                itemSale.ForEach(c => c.SaleId = sale.PKID);
+                await dc.SalesDatas.AddRangeAsync(itemSale);
+                await dc.SaveChangesAsync();
+            }
+        }
+
+        public async Task<SaleDto> GetSaleByPKID(long saleId)
         {
             using (var dc = dbContextFactory.Create(typeof(UserRepository)))
             {
@@ -51,7 +71,7 @@ namespace Shop.Memory.Repository
                 {
                     query = query.Where(c => c.SalePointId == salePoinId.Value);
                 }
-                
+
 
                 if (!string.IsNullOrEmpty(search))
                 {
@@ -69,5 +89,72 @@ namespace Shop.Memory.Repository
 
 
         }
+
+
+        public async Task UpdateSale(SaleDto saleDto)
+        {
+            using (var dc = dbContextFactory.Create(typeof(UserRepository)))
+            {
+                if (!await dc.Sales.AnyAsync(c => c.IsChanled == false && c.PKID == saleDto.PKID))
+                    return;
+
+
+                var sale = await dc.Sales.FirstOrDefaultAsync(c => c.IsChanled == false && c.PKID == saleDto.PKID);
+                sale.SalesDatas = saleDto.SalesDatas;
+                sale.Date = DateTime.UtcNow;
+            }
+        }
+
+
+        public async Task RemoveProduct(long saleId, Guid productId, int count, bool fullProduct)
+        {
+            using (var dc = dbContextFactory.Create(typeof(UserRepository)))
+            {
+                if (!await dc.Sales.AnyAsync(c => c.IsChanled == false && c.PKID == saleId))
+                    return;
+
+                var saleProducts = await dc.Sales.Where(c => c.IsChanled == false && c.PKID == saleId)
+                                                 .Select(c => c.SalesDatas.FirstOrDefault(v => v.ProductId == productId))
+                                                 .FirstOrDefaultAsync();
+
+                if (saleProducts.ProductQuantity < count || fullProduct)
+                {
+                    dc.Remove(saleProducts);
+                }
+                else
+                {
+                    saleProducts.ProductQuantity -= count;
+                }
+
+                await dc.SaveChangesAsync();
+            }
+        }
+
+
+        //public async Task AddProudct(long saleId, Guid productId, int count)
+        //{
+        //    using (var dc = dbContextFactory.Create(typeof(UserRepository)))
+        //    {
+        //        var salePoroduct = await dc.SalesDatas.Where(c => c.ProductId == productId && c.SaleId == saleId).FirstOrDefaultAsync();
+
+        //        if (salePoroduct is null)
+        //        {
+        //            salePoroduct = new SalesDataDto()
+        //            {
+        //                ProductId = productId,
+        //                ProductQuantity = count,
+        //                SaleId = saleId,
+        //            };
+
+        //            await dc.SalesDatas.AddAsync(salePoroduct);
+        //        }
+        //        else
+        //        {
+        //            salePoroduct.ProductQuantity += count;
+        //        }
+
+        //        await dc.SaveChangesAsync();
+        //    }
+        //}
     }
 }

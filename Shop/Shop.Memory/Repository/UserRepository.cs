@@ -1,9 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Shop.Domain;
 using Shop.Domain.DTO;
 using Shop.Domain.InterfaceRepository;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -68,7 +66,7 @@ namespace Shop.Memory.Repository
         }
 
 
-        
+
 
     }
 }

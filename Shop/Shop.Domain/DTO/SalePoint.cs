@@ -2,10 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Shop.Domain.DTO
 {
@@ -29,11 +25,11 @@ namespace Shop.Domain.DTO
         [Key]
         public long PKID { get; init; }
 
-        
+
         [Required]
         public Guid SalePointId { get; set; }
 
-        
+
         [Required]
         public Guid ProductId { get; init; }
 
@@ -42,6 +38,6 @@ namespace Shop.Domain.DTO
 
         public virtual SalePointDto SalePoint { get; init; }
 
-        public virtual ProductDto Product  { get; init; }
+        public virtual ProductDto Product { get; init; }
     }
 }

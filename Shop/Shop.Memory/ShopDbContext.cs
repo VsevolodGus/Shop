@@ -6,7 +6,7 @@ namespace Shop.Memory
     public class ShopDbContext : DbContext
     {
         public DbSet<UserDto> Users { get; set; }
-        public DbSet<ProductDto> Products{ get; set; }
+        public DbSet<ProductDto> Products { get; set; }
         public DbSet<ProvidedProductDto> ProvidedProducts { get; set; }
         public DbSet<SalePointDto> SalePoints { get; set; }
         public DbSet<SaleDto> Sales { get; set; }

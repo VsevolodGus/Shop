@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Shop.Domain.DTO;
 using Shop.Domain.InterfaceRepository;
-using Shop.Domain.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -65,7 +64,7 @@ namespace Shop.Memory.Repository
                         var newProducts = allSalePoints.Select(c => newProductInSalePoint.SalePointId = c);
                         await dc.AddRangeAsync(newProducts);
                     }
-    
+
                     await dc.SaveChangesAsync();
                 }
             }
@@ -100,7 +99,7 @@ namespace Shop.Memory.Repository
                     query = query.Where(c => c.ProvidedProducts.Any(c => c.ProductId == prodcutId && c.Count == needCount.Value));
                 }
 
-                return await query.OrderBy(c=> c.ProvidedProducts.Count)
+                return await query.OrderBy(c => c.ProvidedProducts.Count)
                                   .Skip(skipCount).Take(count)
                                   .ToListAsync();
             }
@@ -112,8 +111,8 @@ namespace Shop.Memory.Repository
             using (var dc = dbContextFactory.Create(typeof(SalePointRepository)))
             {
 
-                var notExsistsProductInSalePoint = await dc.SalePoints.Where(c=> salePointId.HasValue || c.Id == salePointId.Value)
-                                                                      .SelectMany(c=> c.ProvidedProducts.Where(c => c.Count < 1))
+                var notExsistsProductInSalePoint = await dc.SalePoints.Where(c => salePointId.HasValue || c.Id == salePointId.Value)
+                                                                      .SelectMany(c => c.ProvidedProducts.Where(c => c.Count < 1))
                                                                       .ToListAsync();
 
                 dc.ProvidedProducts.RemoveRange(notExsistsProductInSalePoint);
@@ -121,7 +120,7 @@ namespace Shop.Memory.Repository
             }
         }
 
-     
+
 
 
 

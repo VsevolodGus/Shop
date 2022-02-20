@@ -1,7 +1,7 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using Shop.Domain.DTO;
+using System;
 using System.Collections.Generic;
-using Shop.Domain.DTO;
+using System.Threading.Tasks;
 
 namespace Shop.Domain.InterfaceRepository
 {
@@ -18,7 +18,7 @@ namespace Shop.Domain.InterfaceRepository
 
         Task AddSalePoint(SalePointDto model);
 
-        Task UpdateSalePoint (SalePointDto model);
+        Task UpdateSalePoint(SalePointDto model);
 
         Task AddProductInAssortment(Guid? salePointId, Dictionary<Guid, long> products);
     }

@@ -1,7 +1,7 @@
-﻿using System;
-using System.Linq;
+﻿using Shop.Domain.DTO;
+using System;
 using System.Collections.Generic;
-using Shop.Domain.DTO;
+using System.Linq;
 
 namespace Shop.Domain.Model
 {
@@ -28,7 +28,7 @@ namespace Shop.Domain.Model
         }
 
         public List<ProvidedProductDto> ProvidedProducts
-        { 
+        {
             get => _salePointDto.ProvidedProducts.Select(c => c).ToList();
         }
 

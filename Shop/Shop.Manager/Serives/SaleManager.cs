@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Shop.Domain.DTO;
+﻿using Shop.Domain.DTO;
 using Shop.Domain.InterfaceRepository;
 using Shop.Domain.Model;
 using Shop.Manager.Models;
@@ -12,67 +11,72 @@ namespace Shop.Manager
     public class SaleManager
     {
         private readonly ISaleRepository _saleRepository;
-        private readonly IHttpContextAccessor _httpContextAccessor;
-        protected ISession Session => _httpContextAccessor.HttpContext.Session;
-        public SaleManager(ISaleRepository saleRepository, IHttpContextAccessor httpContextAccessor)
+
+        private readonly IProductRepository _productRepository;
+
+        public SaleManager(ISaleRepository saleRepository, IProductRepository productRepository)
         {
             this._saleRepository = saleRepository;
-            this._httpContextAccessor = httpContextAccessor;
+            this._productRepository = productRepository;
         }
-
-        public async Task AddProductInSale()
-        {
-
-        }
-
-        public async Task<bool> RemoveItemFromSale(Guid itemId, long count)
-        {
-            return false;
-        }
-
-
-        public async Task<bool> RemoveFullProductFromSale(Guid productId)
-        {
-            return false;
-        }
-
-        internal async Task<(bool hasValue, Sale order)> TryGetSakeAsync()
-        {
-            if (Session.TryGetCart(out Cart cart))
-            {
-                //var order = await _saleRepository.GetOrderFromCashAsync();
-
-                return (true, null);
-            }
-
-            return (false, null);
-        }
-        public async Task<Sale> GetSaleAsync()
-        {
-            return null;
-        }
-
-
-        internal async Task<IEnumerable<Product>> GetProductsAsync(Sale sale)
-        {
-            //    var bookIds = order.Items.Select(item => item.ProductId);
-
-            //    return await productRepository.GetAllByIdsAsync(bookIds);
-
-            return null;
-        }
-
-        private void UpdateSession(Sale sale)
-        {
-            var cart = new Cart(sale.SaleId, sale.TotalCount, sale.TotalAmount);
-            Session.Set(cart);
-        }
-
 
         public async Task<List<SaleDto>> GetSales(SalesFilter filter, int skipCount, int count)
         {
             return await _saleRepository.GetSales(filter.AllUser, filter.UserId, filter.Search, filter.SalePointId, skipCount, count);
         }
 
+        public async Task CreateSale(Guid? userId, Guid salePointId)
+        {
+            var saleDto = new SaleDto
+            {
+                Date = DateTime.UtcNow,
+                UserId = userId,
+                SalePointId = salePointId,
+                SalesDatas = new List<SalesDataDto>(),
+            };
+
+            await _saleRepository.AddSale(saleDto);
+        }
+
+        public async Task AddProductInSale(long saleId, Guid productId, long count, Guid userId)
+        {
+            var saledto = await _saleRepository.GetSaleByPKID(saleId);
+            if (saledto is null && ((saledto.UserId.HasValue && userId == Guid.Empty) || saledto.UserId.Value == userId))
+                return;
+
+            var sale = Sale.Mapper.Map(saledto);
+            var product = await _productRepository.GetProductById(productId);
+            sale.FillSale(productId, count, product.Price);
+            await _saleRepository.UpdateSale(Sale.Mapper.Map(sale));
+            return;
+        }
+
+
+        public async Task<bool> RemoveProductFromSale(long saleId, Guid productId, long count, Guid userId, bool fullProduct = false)
+        {
+            var saledto = await _saleRepository.GetSaleByPKID(saleId);
+            if (saledto is null && ((saledto.UserId.HasValue && userId == Guid.Empty) || saledto.UserId.Value == userId))
+                return false;
+
+            var sale = Sale.Mapper.Map(saledto);
+
+            sale.RemoveItem(productId, count, fullProduct);
+            await _saleRepository.UpdateSale(Sale.Mapper.Map(sale));
+            return true;
+        }
+
+
+
+        public async Task CancelSale(long saleId, Guid userId)
+        {
+            var saledto = await _saleRepository.GetSaleByPKID(saleId);
+            if (saledto is null && ((saledto.UserId.HasValue && userId == Guid.Empty) || saledto.UserId.Value == userId))
+                return;
+
+            var sale = Sale.Mapper.Map(saledto);
+            sale.IsCancel = true;
+            await _saleRepository.UpdateSale(Sale.Mapper.Map(sale));
+            return;
+        }
     }
 }

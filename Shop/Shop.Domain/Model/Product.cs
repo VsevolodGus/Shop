@@ -1,5 +1,5 @@
-﻿using System;
-using Shop.Domain.DTO;
+﻿using Shop.Domain.DTO;
+using System;
 
 namespace Shop.Domain.Model
 {
@@ -11,18 +11,18 @@ namespace Shop.Domain.Model
         {
             this._productDto = productDto;
         }
-        public Guid ProductId 
+        public Guid ProductId
         {
             get => _productDto.ProductId;
         }
 
-        public string Name 
+        public string Name
         {
             get => _productDto.Name;
             set => _productDto.Name = value;
         }
 
-        public decimal Price 
+        public decimal Price
         {
             get => _productDto.Price;
             set => _productDto.Price = value;

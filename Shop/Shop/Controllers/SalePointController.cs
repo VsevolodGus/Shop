@@ -1,11 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Shop.Domain.DTO;
 using Shop.Manager;
 using Shop.Manager.Models;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Shop.Controllers
@@ -86,7 +83,7 @@ namespace Shop.Controllers
         }
 
         [HttpGet, Route("list/search")]
-        public async Task<IActionResult> GetSalePointBySearch(string search, int skipCount =0, int count = 10)
+        public async Task<IActionResult> GetSalePointBySearch(string search, int skipCount = 0, int count = 10)
         {
             var result = await _salePointManager.GetSalePointBySearch(search, skipCount, count);
 

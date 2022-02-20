@@ -4,7 +4,6 @@ using Shop.Domain.InterfaceRepository;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Shop.Memory.Repository
@@ -30,7 +29,7 @@ namespace Shop.Memory.Repository
             using (var dc = dbContextFactory.Create(typeof(ProductRepository)))
             {
                 var queryProductList = dc.SalePoints.Where(c => c.Id == salePointId)
-                                                    .SelectMany(v => v.ProvidedProducts.Where(c=> c.Count > 0)
+                                                    .SelectMany(v => v.ProvidedProducts.Where(c => c.Count > 0)
                                                                                        .Select(c => c.Product)
                                                                                        );
 
@@ -39,7 +38,7 @@ namespace Shop.Memory.Repository
                     queryProductList = queryProductList.Where(c => c.Name.Contains(search));
                 }
 
-                return await queryProductList.OrderBy(c=> c.Price)
+                return await queryProductList.OrderBy(c => c.Price)
                                              .Skip(skipCount).Take(count)
                                              .ToListAsync();
 
@@ -84,8 +83,8 @@ namespace Shop.Memory.Repository
                 bool IsExsistsProduct = await dc.Products.AnyAsync(c => c.IsDeleted == false && c.ProductId == model.ProductId);
                 if (!IsExsistsProduct)
                     return false;
-                
-                var oldModel  = await dc.Products.FirstOrDefaultAsync(c => c.IsDeleted == false && c.ProductId == model.ProductId);
+
+                var oldModel = await dc.Products.FirstOrDefaultAsync(c => c.IsDeleted == false && c.ProductId == model.ProductId);
                 oldModel.Name = model.Name;
                 oldModel.Price = model.Price;
                 oldModel.IsDeleted = model.IsDeleted;

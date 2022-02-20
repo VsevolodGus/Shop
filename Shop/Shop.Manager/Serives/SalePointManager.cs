@@ -3,8 +3,6 @@ using Shop.Domain.InterfaceRepository;
 using Shop.Manager.Models;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Shop.Manager
@@ -44,7 +42,7 @@ namespace Shop.Manager
         {
             await _salePointRepository.AddProductInAssortment(settingsAddingProducts.SalePointId, settingsAddingProducts.Products);
         }
-        
+
         public async Task<bool> DeleteAbsenceProductFromSalePoint(Guid? salePointId)
         {
             try
@@ -74,6 +72,6 @@ namespace Shop.Manager
 
 
 
-        
+
     }
 }
