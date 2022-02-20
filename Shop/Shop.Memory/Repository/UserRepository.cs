@@ -40,11 +40,29 @@ namespace Shop.Memory.Repository
             }
         }
 
+        public async Task<bool> DeleteUserById(Guid userId)
+        {
+            using (var dc = dbContextFactory.Create(typeof(UserRepository)))
+            {
+                var user = await dc.Users.Where(c => c.Id == userId && c.IsDeleted == false).FirstOrDefaultAsync();
+                if (user is not null)
+                {
+                    user.IsDeleted = false;
+                    await dc.SaveChangesAsync();
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+        }
+
         public async Task<UserDto> GetUserForLogin(string name, string password)
         {
             using (var dc = dbContextFactory.Create(typeof(UserRepository)))
             {
-                return await dc.Users.Where(c => c.Name == name && c.Password == password)
+                return await dc.Users.Where(c => c.Name == name && c.Password == password && c.IsDeleted == false)
                                .FirstOrDefaultAsync();
             }
         }

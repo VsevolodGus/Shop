@@ -1,5 +1,6 @@
-﻿using Shop.Domain.DTO;
+﻿using System;
 using System.Threading.Tasks;
+using Shop.Domain.DTO;
 
 namespace Shop.Domain.InterfaceRepository
 {
@@ -8,5 +9,7 @@ namespace Shop.Domain.InterfaceRepository
         Task<bool> AddUser(string name, string password);
 
         Task<UserDto> GetUserForLogin(string name, string password);
+
+        Task<bool> DeleteUserById(Guid userId);
     }
 }

@@ -23,5 +23,7 @@ namespace Shop.Domain.DTO
         public string Email { get; set; }
 
         public string NumberPhone { get; set; }
+
+        public bool IsDeleted { get; set; }
     }
 }
