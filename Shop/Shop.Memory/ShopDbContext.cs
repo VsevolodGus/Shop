@@ -18,7 +18,7 @@ namespace Shop.Memory
         { }
 
 
-
+        #region Заполнение базы фейковыми данными
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             BuildModelProducts(modelBuilder);
@@ -96,5 +96,6 @@ namespace Shop.Memory
                     });
             });
         }
+        #endregion
     }
 }

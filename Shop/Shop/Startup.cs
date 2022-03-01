@@ -64,10 +64,7 @@ namespace Shop
                 opt.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
             });
 
-            services.AddSingleton<SaleManager>();
-            services.AddSingleton<SalePointManager>();
-            services.AddSingleton<UserService>();
-            services.AddSingleton<ProductManager>();
+            services.AddManagers(Configuration);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

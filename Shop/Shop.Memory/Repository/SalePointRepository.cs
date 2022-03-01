@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Shop.Memory.Repository
 {
-    public class SalePointRepository : ISalePointRepository
+    internal class SalePointRepository : ISalePointRepository
     {
         private readonly DbContextFactory dbContextFactory;
 
