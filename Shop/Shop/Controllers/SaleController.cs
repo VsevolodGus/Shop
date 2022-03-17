@@ -3,6 +3,7 @@ using Shop.Manager;
 using Shop.Manager.Models;
 using System;
 using System.Threading.Tasks;
+using UserUtils;
 
 namespace Shop.Controllers
 {
@@ -22,8 +23,7 @@ namespace Shop.Controllers
         [Route("list")]
         public async Task<IActionResult> GetSales([FromQuery] SalesFilter filter, string auth, int skipCount = 0, int count = 10)
         {
-            ChekAuthToken(auth, out Guid userId);
-            if ((userId == Guid.Empty && !filter.UserId.HasValue) || userId == filter.UserId)
+            if (!Util.IsAuthUser(auth, out Guid userId) && (userId == Guid.Empty && !filter.UserId.HasValue) || userId == filter.UserId)
                 return Unauthorized();
 
 
@@ -42,7 +42,10 @@ namespace Shop.Controllers
         [Route("add/product")]
         public async Task<IActionResult> AddProductInSale(long saleId, Guid productId, long productCount, string auth)
         {
-            ChekAuthToken(auth, out Guid userId);
+            if (!Util.IsAuthUser(auth, out Guid userId))
+            {
+                return Unauthorized();
+            }
 
             await _saleManager.AddProductInSale(saleId, productId, productCount, userId);
 
@@ -53,7 +56,10 @@ namespace Shop.Controllers
         [Route("remove/product")]
         public async Task<IActionResult> RemoveProduct(long saleId, Guid productId, long? productCount, string auth)
         {
-            ChekAuthToken(auth, out Guid userId);
+            if (!Util.IsAuthUser(auth, out Guid userId))
+            {
+                return Unauthorized();
+            }
 
             await _saleManager.RemoveProductFromSale(saleId, productId, productCount.GetValueOrDefault(), userId, productCount.HasValue);
 
@@ -66,7 +72,10 @@ namespace Shop.Controllers
         [Route("create")]
         public async Task<IActionResult> CreateSale(Guid salePointId, string auth)
         {
-            ChekAuthToken(auth, out Guid userId);
+            if (!Util.IsAuthUser(auth, out Guid userId))
+            {
+                return Unauthorized();
+            }
 
             await _saleManager.CreateSale(userId != Guid.Empty ? userId : null, salePointId);
 
@@ -77,7 +86,10 @@ namespace Shop.Controllers
         [Route("cancled")]
         public async Task<IActionResult> SetCancledSale(long saleId, string auth)
         {
-            ChekAuthToken(auth, out Guid userId);
+            if (!Util.IsAuthUser(auth, out Guid userId))
+            {
+                return Unauthorized();
+            }
 
             await _saleManager.CancelSale(saleId, userId);
 

@@ -1,9 +1,9 @@
-﻿using Shop.Domain.DTO;
-using Shop.Domain.InterfaceRepository;
-using Shop.Manager.Models;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Threading.Tasks;
+using System.Collections.Generic;
+using Shop.Domain.DTO;
+using Shop.Manager.Models;
+using Shop.Domain.InterfaceRepository;
 
 namespace Shop.Manager
 {

@@ -16,7 +16,5 @@ namespace Shop.Domain.InterfaceRepository
         Task UpdateSale(SaleDto model);
 
         Task RemoveProduct(long saleId, Guid productId, int count, bool fullProduct);
-
-        //Task AddProudct(long saleId, Guid productId, int count);
     }
 }

@@ -1,19 +1,19 @@
-﻿using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Http;
+﻿using System;
+using System.Net;
+using System.Text;
+using System.Threading.Tasks;
+using System.Security.Claims;
+using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.IdentityModel.Tokens;
 using Shop.Domain;
 using Shop.Domain.InterfaceRepository;
 using Swashbuckle.AspNetCore.Annotations;
-using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
-using System.Net;
-using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
-
+using Shop.Manager;
 
 namespace Shop.Controllers
 {
@@ -21,11 +21,10 @@ namespace Shop.Controllers
     [ApiController]
     public class UserConroller : BaseShopController
     {
-        private readonly IUserRepository _userRepository;
-
-        public UserConroller(IUserRepository userRepository)
+        private readonly UserManager _userService;
+        public UserConroller(UserManager userService)
         {
-            this._userRepository = userRepository;
+            this._userService = userService;
         }
 
         [SwaggerResponse((int)HttpStatusCode.OK)]
@@ -37,21 +36,10 @@ namespace Shop.Controllers
                 return BadRequest("Invalid client request");
             }
 
-            var user = await _userRepository.GetUserForLogin(model.UserName, model.Password);
+            var tokenString = await _userService.AuthorizationUser(model.UserName, model.Password);
 
-            if (user is not null)
+            if (tokenString is not null)
             {
-                var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("superSecretKey@2410"));
-                var signinCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
-                var tokenOptions = new JwtSecurityToken(
-                    issuer: "CodeMaze",
-                    audience: "https://localhost:5001",
-                    claims: new List<Claim>(),
-                    expires: DateTime.Now.AddMinutes(5),
-                    signingCredentials: signinCredentials
-                );
-                var tokenString = new JwtSecurityTokenHandler().WriteToken(tokenOptions);
-                authUsers.Add(tokenString, user.Id);
                 return Ok(new { Token = tokenString });
             }
             else
@@ -64,9 +52,10 @@ namespace Shop.Controllers
 
         [SwaggerResponse((int)HttpStatusCode.OK)]
         [HttpPost, Route("logout")]
-        public async Task<IActionResult> LogOut()
+        public async Task<IActionResult> LogOut(string token)
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            await _userService.LogOut(token);
             return Content("OK");
         }
 
@@ -75,28 +64,33 @@ namespace Shop.Controllers
         [HttpPost, Route("registr")]
         public async Task<IActionResult> Registr(LoginModel model)
         {
-            var user = await _userRepository.GetUserForLogin(model.UserName, model.Password);
-            if (user is null)
+            var token = await _userService.RegistrUser(model.UserName, model.Password);
+
+            if (token is not null)
             {
-                await _userRepository.AddUser(model.UserName, model.Password);
-                return await Login(model);
+                return JsonCommonApiResult(token);
             }
             else
             {
-                return Content("NO OK");
+                return JsonCommonApiResult("NO OK");
             }
         }
 
 
         [HttpPost, Route("delete")]
-        public async Task<IActionResult> DeleteAccountUser(Guid userId, string auth)
+        public async Task<IActionResult> DeleteAccountUser(string auth)
         {
-            if (!ChekAuthToken(auth, out Guid currentUserId) && currentUserId != userId)
-                return Unauthorized();
+            var isDelete = await _userService.DeleteAcountUser(auth);
 
-            await _userRepository.DeleteUserById(userId);
+            if (isDelete)
+            {
+                return JsonCommonApiResult("OK");
+            }
+            else
+            {
+                return JsonCommonApiResult("NO OK");
+            }
 
-            return null;
         }
     }
 }

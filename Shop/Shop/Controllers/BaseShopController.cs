@@ -9,26 +9,6 @@ namespace Shop.Controllers
     [ApiController]
     public class BaseShopController : ControllerBase
     {
-
-        /// <summary>
-        /// auth и id юзера пользователя
-        /// </summary>
-        protected static Dictionary<string, Guid> authUsers = new Dictionary<string, Guid>();
-
-        [NonAction]
-        protected static bool ChekAuthToken(string token, out Guid userId)
-        {
-            if (authUsers.TryGetValue(token, out userId))
-            {
-                return true;
-            }
-            else
-            {
-                userId = Guid.Empty;
-                return false;
-            }
-        }
-
         [NonAction]
         protected IActionResult JsonCommonApiResult(object model)
         {
@@ -41,7 +21,5 @@ namespace Shop.Controllers
                 ContractResolver = null
             }), "application/json");
         }
-
-
     }
 }

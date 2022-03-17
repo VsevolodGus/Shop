@@ -15,7 +15,7 @@ namespace Shop.Manager
             services.AddSingleton<ProductManager>();
             services.AddSingleton<SaleManager>();
             services.AddSingleton<SalePointManager>();
-            services.AddSingleton<UserService>();
+            services.AddSingleton<UserManager>();
 
             return services;
         }

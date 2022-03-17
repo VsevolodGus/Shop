@@ -4,6 +4,7 @@ using Shop.Domain.InterfaceRepository;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using UserUtils;
 
 namespace Shop.Memory.Repository
 {
@@ -21,11 +22,12 @@ namespace Shop.Memory.Repository
 
             try
             {
+                var passwordHash = Util.CalculateSHA256Hash(password);
                 await dc.Users.AddAsync(new UserDto
                 {
                     Id = Guid.NewGuid(),
                     Name = name,
-                    Password = password,
+                    Password = passwordHash,
                 });
                 await dc.SaveChangesAsync();
 
@@ -58,9 +60,9 @@ namespace Shop.Memory.Repository
         public async Task<UserDto> GetUserForLogin(string name, string password)
         {
             var dc = dbContextFactory.Create(typeof(UserRepository));
-
-                return await dc.Users.Where(c => c.Name == name && c.Password == password && c.IsDeleted == false)
-                               .FirstOrDefaultAsync();
+            var passwordHash = Util.CalculateSHA256Hash(password);
+            return await dc.Users.Where(c => c.Name == name && c.Password == password && c.IsDeleted == false)
+                                 .FirstOrDefaultAsync();
         }
 
 
