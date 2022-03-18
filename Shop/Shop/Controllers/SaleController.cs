@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using Shop.Manager;
 using Shop.Manager.Models;
-using System;
-using System.Threading.Tasks;
 using UserUtils;
 
 namespace Shop.Controllers
@@ -23,7 +23,7 @@ namespace Shop.Controllers
         [Route("list")]
         public async Task<IActionResult> GetSales([FromQuery] SalesFilter filter, string auth, int skipCount = 0, int count = 10)
         {
-            if (!Util.IsAuthUser(auth, out Guid userId) && (userId == Guid.Empty && !filter.UserId.HasValue) || userId == filter.UserId)
+            if (!AuthUtil.IsAuthUser(auth, out Guid userId) && (userId == Guid.Empty && !filter.UserId.HasValue) || userId == filter.UserId)
                 return Unauthorized();
 
 
@@ -42,7 +42,7 @@ namespace Shop.Controllers
         [Route("add/product")]
         public async Task<IActionResult> AddProductInSale(long saleId, Guid productId, long productCount, string auth)
         {
-            if (!Util.IsAuthUser(auth, out Guid userId))
+            if (!AuthUtil.IsAuthUser(auth, out Guid userId))
             {
                 return Unauthorized();
             }
@@ -56,7 +56,7 @@ namespace Shop.Controllers
         [Route("remove/product")]
         public async Task<IActionResult> RemoveProduct(long saleId, Guid productId, long? productCount, string auth)
         {
-            if (!Util.IsAuthUser(auth, out Guid userId))
+            if (!AuthUtil.IsAuthUser(auth, out Guid userId))
             {
                 return Unauthorized();
             }
@@ -72,7 +72,7 @@ namespace Shop.Controllers
         [Route("create")]
         public async Task<IActionResult> CreateSale(Guid salePointId, string auth)
         {
-            if (!Util.IsAuthUser(auth, out Guid userId))
+            if (!AuthUtil.IsAuthUser(auth, out Guid userId))
             {
                 return Unauthorized();
             }
@@ -86,7 +86,7 @@ namespace Shop.Controllers
         [Route("cancled")]
         public async Task<IActionResult> SetCancledSale(long saleId, string auth)
         {
-            if (!Util.IsAuthUser(auth, out Guid userId))
+            if (!AuthUtil.IsAuthUser(auth, out Guid userId))
             {
                 return Unauthorized();
             }

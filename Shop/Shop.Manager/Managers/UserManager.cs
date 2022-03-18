@@ -35,7 +35,7 @@ namespace Shop.Manager
                     signingCredentials: signinCredentials
                 );
                 var tokenString = new JwtSecurityTokenHandler().WriteToken(tokenOptions);
-                Util.AddUserAuth(tokenString, user.Id);
+                AuthUtil.AddUserAuth(tokenString, user.Id);
                 return tokenString;
             }
 
@@ -46,7 +46,7 @@ namespace Shop.Manager
 
         public async Task LogOut(string token)
         {
-            Util.LogOutUser(token);
+            AuthUtil.LogOutUser(token);
         }
 
         public async Task<string> RegistrUser(string login, string password)
@@ -67,9 +67,9 @@ namespace Shop.Manager
 
         public async Task<bool> DeleteAcountUser(string auth)
         {
-            if (Util.IsAuthUser(auth, out Guid userId) && userId != Guid.Empty)
+            if (AuthUtil.IsAuthUser(auth, out Guid userId) && userId != Guid.Empty)
             {
-                Util.LogOutUser(auth);
+                AuthUtil.LogOutUser(auth);
                 await _userRepository.DeleteUserById(userId);
                 return true;
             }
