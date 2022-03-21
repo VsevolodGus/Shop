@@ -15,7 +15,8 @@ namespace Shop.Memory
             services.AddDbContext<ShopDbContext>(
                 options =>
                 {
-                    options.UseSqlServer(configuration.GetConnectionString("Shop"));
+                    options.UseLazyLoadingProxies()
+                           .UseSqlServer(configuration.GetConnectionString("Shop"));
                 },
                 ServiceLifetime.Transient
             );
