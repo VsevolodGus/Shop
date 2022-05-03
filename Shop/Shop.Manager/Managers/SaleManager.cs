@@ -25,7 +25,7 @@ namespace Shop.Manager
             return await _saleRepository.GetSales(filter.AllUser, filter.UserId, filter.Search, filter.SalePointId, skipCount, count);
         }
 
-        public async Task CreateSale(Guid? userId, Guid salePointId)
+        public async Task<long> CreateSale(Guid? userId, Guid salePointId)
         {
             var saleDto = new SaleDto
             {
@@ -35,7 +35,8 @@ namespace Shop.Manager
                 SalesDatas = new List<SalesDataDto>(),
             };
 
-            await _saleRepository.AddSale(saleDto);
+            return await _saleRepository.AddSale(saleDto);
+            
         }
 
         public async Task AddProductInSale(long saleId, Guid productId, long count, Guid userId)

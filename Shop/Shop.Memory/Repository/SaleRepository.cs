@@ -17,7 +17,7 @@ namespace Shop.Memory.Repository
             this.dbContextFactory = dbContextFactory;
         }
 
-        public async Task AddSale(SaleDto model)
+        public async Task<long> AddSale(SaleDto model)
         {
             var dc = dbContextFactory.Create(typeof(UserRepository));
 
@@ -35,6 +35,7 @@ namespace Shop.Memory.Repository
             itemSale.ForEach(c => c.SaleId = sale.PKID);
             await dc.SalesDatas.AddRangeAsync(itemSale);
             await dc.SaveChangesAsync();
+            return sale.PKID;
         }
 
         public async Task<SaleDto> GetSaleByPKID(long saleId)

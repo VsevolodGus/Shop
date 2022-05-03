@@ -17,25 +17,23 @@ namespace Shop.Manager
         }
 
 
-        public async Task<bool> SetSalePoint(SalePointDto model)
+        public async Task<Guid> SetSalePoint(SalePointDto model)
         {
             var productExists = await _salePointRepository.GetSalePointById(model.Id);
             try
             {
                 if (productExists is null)
                 {
-                    await _salePointRepository.AddSalePoint(model);
+                    return await _salePointRepository.AddSalePoint(model);
                 }
                 else
                 {
-                    await _salePointRepository.UpdateSalePoint(model);
+                    return await _salePointRepository.UpdateSalePoint(model);
                 }
-
-                return true;
             }
             catch
             {
-                return false;
+                return Guid.Empty;
             }
         }
         public async Task AddProductInAssortment(SettingsAddingProducts settingsAddingProducts)

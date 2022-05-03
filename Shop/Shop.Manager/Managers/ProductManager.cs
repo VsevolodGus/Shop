@@ -16,7 +16,7 @@ namespace Shop.Manager
         }
 
 
-        public async Task<bool> SetProduct(ProductDto product)
+        public async Task<Guid> SetProduct(ProductDto product)
         {
             var productExists = await _productRepository.GetProductById(product.ProductId);
 

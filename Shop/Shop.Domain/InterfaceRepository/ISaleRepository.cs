@@ -11,7 +11,7 @@ namespace Shop.Domain.InterfaceRepository
 
         Task<SaleDto> GetSaleByPKID(long saleId);
 
-        Task AddSale(SaleDto model);
+        Task<long> AddSale(SaleDto model);
 
         Task UpdateSale(SaleDto model);
 

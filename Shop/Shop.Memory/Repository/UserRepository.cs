@@ -22,12 +22,12 @@ namespace Shop.Memory.Repository
 
             try
             {
-                var passwordHash = Util.CalculateSHA256Hash(password);
+                
                 await dc.Users.AddAsync(new UserDto
                 {
                     Id = Guid.NewGuid(),
                     Name = name,
-                    Password = passwordHash,
+                    Password = password,
                 });
                 await dc.SaveChangesAsync();
 

@@ -17,7 +17,7 @@ namespace Shop.Domain.DTO
         [MaxLength(200)]
         public string Address { get; set; }
 
-        public ICollection<ProvidedProductDto> ProvidedProducts { get; set; }
+        public virtual ICollection<ProvidedProductDto> ProvidedProducts { get; set; }
     }
 
     public class ProvidedProductDto

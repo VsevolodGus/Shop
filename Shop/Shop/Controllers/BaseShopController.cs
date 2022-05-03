@@ -5,7 +5,6 @@ using System.Collections.Generic;
 
 namespace Shop.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
     public class BaseShopController : ControllerBase
     {

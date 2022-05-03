@@ -16,9 +16,9 @@ namespace Shop.Domain.InterfaceRepository
 
         Task DeleteEmptyProductFromSalePoints(Guid? salePointId);
 
-        Task AddSalePoint(SalePointDto model);
+        Task<Guid> AddSalePoint(SalePointDto model);
 
-        Task UpdateSalePoint(SalePointDto model);
+        Task<Guid> UpdateSalePoint(SalePointDto model);
 
         Task AddProductInAssortment(Guid? salePointId, Dictionary<Guid, long> products);
     }

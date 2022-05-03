@@ -7,8 +7,8 @@ using UserUtils;
 
 namespace Shop.Controllers
 {
-    [Route("api/sale")]
     [ApiController]
+    [Route("api/sale")]
     public class SaleController : BaseShopController
     {
         private readonly SaleManager _saleManager;
@@ -19,12 +19,15 @@ namespace Shop.Controllers
         }
 
 
-        [HttpGet]
-        [Route("list")]
+        [HttpGet("list")]
         public async Task<IActionResult> GetSales([FromQuery] SalesFilter filter, string auth, int skipCount = 0, int count = 10)
         {
-            if (!AuthUtil.IsAuthUser(auth, out Guid userId) && (userId == Guid.Empty && !filter.UserId.HasValue) || userId == filter.UserId)
+            if (!AuthUtil.IsAuthUser(auth, out Guid userId)
+                && filter is null
+                && (userId == Guid.Empty && !filter.UserId.HasValue || userId != filter.UserId))
+            {
                 return Unauthorized();
+            }
 
 
             var result = await _saleManager.GetSales(filter, skipCount, count);
@@ -38,8 +41,7 @@ namespace Shop.Controllers
         }
 
 
-        [HttpPost]
-        [Route("add/product")]
+        [HttpPost("add/product")]
         public async Task<IActionResult> AddProductInSale(long saleId, Guid productId, long productCount, string auth)
         {
             if (!AuthUtil.IsAuthUser(auth, out Guid userId))
@@ -52,8 +54,7 @@ namespace Shop.Controllers
             return Content("OK");
         }
 
-        [HttpDelete]
-        [Route("remove/product")]
+        [HttpDelete("remove/product")]
         public async Task<IActionResult> RemoveProduct(long saleId, Guid productId, long? productCount, string auth)
         {
             if (!AuthUtil.IsAuthUser(auth, out Guid userId))
@@ -68,8 +69,7 @@ namespace Shop.Controllers
 
 
 
-        [HttpPost]
-        [Route("create")]
+        [HttpPost("create")]
         public async Task<IActionResult> CreateSale(Guid salePointId, string auth)
         {
             if (!AuthUtil.IsAuthUser(auth, out Guid userId))
@@ -77,13 +77,12 @@ namespace Shop.Controllers
                 return Unauthorized();
             }
 
-            await _saleManager.CreateSale(userId != Guid.Empty ? userId : null, salePointId);
+            var result = await _saleManager.CreateSale(userId != Guid.Empty ? userId : null, salePointId);
 
-            return Content("OK");
+            return Content(result.ToString());
         }
 
-        [HttpPost]
-        [Route("cancled")]
+        [HttpPost("cancled")]
         public async Task<IActionResult> SetCancledSale(long saleId, string auth)
         {
             if (!AuthUtil.IsAuthUser(auth, out Guid userId))

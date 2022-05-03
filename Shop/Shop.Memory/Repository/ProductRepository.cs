@@ -59,35 +59,32 @@ namespace Shop.Memory.Repository
                                          .ToListAsync();
         }
 
-        public async Task<bool> AddProduct(ProductDto product)
+        public async Task<Guid> AddProduct(ProductDto product)
         {
             var dc = dbContextFactory.Create(typeof(ProductRepository));
 
             bool IsExsistsProduct = await dc.Products.AnyAsync(c => c.IsDeleted == false && c.ProductId == product.ProductId);
             if (IsExsistsProduct)
-                return false;
+                return Guid.Empty;
 
             await dc.Products.AddAsync(product);
             await dc.SaveChangesAsync();
-            return true;
+            return product.ProductId;
 
         }
 
-        public async Task<bool> UpdateProduct(ProductDto model)
+        public async Task<Guid> UpdateProduct(ProductDto model)
         {
             var dc = dbContextFactory.Create(typeof(ProductRepository));
 
             bool IsExsistsProduct = await dc.Products.AnyAsync(c => c.IsDeleted == false && c.ProductId == model.ProductId);
             if (!IsExsistsProduct)
-                return false;
+                return Guid.Empty;
 
-            var oldModel = await dc.Products.FirstOrDefaultAsync(c => c.IsDeleted == false && c.ProductId == model.ProductId);
-            oldModel.Name = model.Name;
-            oldModel.Price = model.Price;
-            oldModel.IsDeleted = model.IsDeleted;
+            dc.Products.Update(model);
             await dc.SaveChangesAsync();
 
-            return true;
+            return model.ProductId;
         }
     }
 }

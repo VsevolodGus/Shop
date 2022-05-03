@@ -27,7 +27,7 @@ namespace Shop.Domain.DTO
 
         public virtual UserDto User { get; init; }
 
-        public ICollection<SalesDataDto> SalesDatas { get; set; }
+        public virtual ICollection<SalesDataDto> SalesDatas { get; set; }
 
     }
 

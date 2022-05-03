@@ -13,8 +13,8 @@ namespace Shop.Domain.InterfaceRepository
 
         Task<List<ProductDto>> GetProductsBySalePoint(Guid salePointId, string search, int skipCount, int count);
 
-        Task<bool> AddProduct(ProductDto product);
+        Task<Guid> AddProduct(ProductDto product);
 
-        Task<bool> UpdateProduct(ProductDto product);
+        Task<Guid> UpdateProduct(ProductDto product);
     }
 }

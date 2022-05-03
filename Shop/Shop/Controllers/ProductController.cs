@@ -18,18 +18,18 @@ namespace Shop.Controllers
         }
 
 
-        [HttpPost]
-        [Route("product/set")]
+        [HttpPost("set")]
         public async Task<IActionResult> SetProduct([FromBody] ProductDto model)
         {
             var result = await _productService.SetProduct(model);
 
-            if (result)
+            if (result != Guid.Empty)
             {
                 return JsonCommonApiResult(new
                 {
                     errorText = "OK",
-                    errorCode = 200
+                    errorCode = 200,
+                    data = result
                 });
             }
             else
@@ -42,8 +42,7 @@ namespace Shop.Controllers
             }
         }
 
-        [HttpGet]
-        [Route("product/byid")]
+        [HttpGet("byid")]
         public async Task<IActionResult> GetProductById(Guid productId)
         {
             var result = await _productService.GetProductById(productId);
@@ -55,8 +54,7 @@ namespace Shop.Controllers
             });
         }
 
-        [HttpGet]
-        [Route("product/search")]
+        [HttpGet("search")]
         public async Task<IActionResult> GetProductBySearch(string search, int skipCount = 0, int count = 10)
         {
             var result = await _productService.GetProductBySearch(search, skipCount, count);
@@ -69,8 +67,7 @@ namespace Shop.Controllers
         }
 
 
-        [HttpGet]
-        [Route("product/salepoint")]
+        [HttpGet("bysalepointid")]
         public async Task<IActionResult> GetProductBySalePoiny(Guid salePointId, string search, int skipCount = 0, int count = 10)
         {
             var result = await _productService.GetProductBySalePoint(salePointId, search, skipCount, count);

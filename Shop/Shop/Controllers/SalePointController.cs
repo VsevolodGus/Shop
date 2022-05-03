@@ -18,18 +18,19 @@ namespace Shop.Controllers
             this._salePointManager = salePointManager;
         }
 
-        [HttpPost, Route("set")]
+        [HttpPost("set")]
         public async Task<IActionResult> SetSalePoint([FromBody] SalePointDto model)
         {
             var result = await _salePointManager.SetSalePoint(model);
 
 
-            if (result)
+            if (result != Guid.Empty)
             {
                 return JsonCommonApiResult(new
                 {
                     errorText = "OK",
-                    errorCode = 200
+                    errorCode = 200,
+                    data = result
                 });
             }
             else
@@ -42,7 +43,7 @@ namespace Shop.Controllers
             }
         }
 
-        [HttpPost, Route("set")]
+        [HttpPost("set/product")]
         public async Task<IActionResult> SetProductInAssortiment([FromBody] SettingsAddingProducts model)
         {
             await _salePointManager.AddProductInAssortment(model);

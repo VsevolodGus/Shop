@@ -19,24 +19,20 @@ namespace Shop.Memory.Repository
 
 
 
-        public async Task AddSalePoint(SalePointDto model)
+        public async Task<Guid> AddSalePoint(SalePointDto model)
         {
             var dc = dbContextFactory.Create(typeof(SalePointRepository));
-
             await dc.SalePoints.AddAsync(model);
             await dc.SaveChangesAsync();
+            return model.Id;
         }
 
-        public async Task UpdateSalePoint(SalePointDto model)
+        public async Task<Guid> UpdateSalePoint(SalePointDto model)
         {
             var dc = dbContextFactory.Create(typeof(SalePointRepository));
-
-            var salePoint = await dc.SalePoints.Where(c => c.Id == model.Id).FirstOrDefaultAsync();
-
-            salePoint.Name = model.Name;
-            salePoint.Address = model.Address;
-
+            dc.SalePoints.Update(model);
             await dc.SaveChangesAsync();
+            return model.Id;
         }
 
         public async Task AddProductInAssortment(Guid? salePointId, Dictionary<Guid, long> products)
@@ -79,10 +75,20 @@ namespace Shop.Memory.Repository
         {
             var dc = dbContextFactory.Create(typeof(SalePointRepository));
 
-            return await dc.SalePoints.Where(c => c.Name.Contains(search) || c.Address.Contains(search))
-                                      .OrderBy(c => c.ProvidedProducts.Count)
+            if (string.IsNullOrEmpty(search))
+            {
+                return await dc.SalePoints.OrderBy(c => c.ProvidedProducts.Count)
                                       .Skip(skipCount).Take(count)
                                       .ToListAsync();
+            }
+            else
+            {
+                return await dc.SalePoints.Where(c=> c.Name.Contains(search) || c.Address.Contains(search))
+                                          .OrderBy(c => c.ProvidedProducts.Count)
+                                          .Skip(skipCount).Take(count)
+                                          .ToListAsync();
+            }
+            
         }
 
         public async Task<List<SalePointDto>> GetSalePointByHasProduct(Guid prodcutId, int skipCount, int count, long? needCount = 1)

@@ -19,11 +19,11 @@ namespace Shop.Manager
             this._userRepository = userRepository;
         }
 
-        public async Task<string> AuthorizationUser(string login, string password)
+        public async Task<string> AuthorizationUser(string login, string password, bool isFirstLogon = false)
         {
             var user = await _userRepository.GetUserForLogin(login, password);
 
-            if (user is not null)
+            if (user is not null || isFirstLogon)
             {
                 var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("superSecretKey@2410"));
                 var signinCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
@@ -51,8 +51,8 @@ namespace Shop.Manager
 
         public async Task<string> RegistrUser(string login, string password)
         {
+            password = Util.CalculateSHA256Hash(password);
             var user = await _userRepository.GetUserForLogin(login, password);
-
             if (user is null)
             {
                 if (await _userRepository.AddUser(login, password) == false)
