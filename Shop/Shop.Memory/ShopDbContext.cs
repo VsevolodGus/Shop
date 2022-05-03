@@ -6,11 +6,11 @@ namespace Shop.Memory
 {
     public class ShopDbContext : DbContext
     {
-        public DbSet<UserDto> Users { get; set; }
-        public DbSet<ProductDto> Products { get; set; }
-        public DbSet<SalePointDto> SalePoints { get; set; }
+        public DbSet<UserEntity> Users { get; set; }
+        public DbSet<ProductEntity> Products { get; set; }
+        public DbSet<SalePointEntity> SalePoints { get; set; }
         public DbSet<ProvidedProductDto> ProvidedProducts { get; set; }
-        public DbSet<SaleDto> Sales { get; set; }
+        public DbSet<SaleEntity> Sales { get; set; }
         public DbSet<SalesDataDto> SalesDatas { get; set; }
 
 
@@ -28,17 +28,17 @@ namespace Shop.Memory
 
         private static void BuildModelProducts(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<ProductDto>(action =>
+            modelBuilder.Entity<ProductEntity>(action =>
             {
                 action.HasData(
-                    new ProductDto
+                    new ProductEntity
                     {
                         ProductId = System.Guid.NewGuid(),
                         Name = "Яйца",
                         IsDeleted = false,
                         Price = 10,
                     },
-                    new ProductDto
+                    new ProductEntity
                     {
                         ProductId = System.Guid.NewGuid(),
                         Name = "Водка",
@@ -50,10 +50,10 @@ namespace Shop.Memory
 
         private static void BuildModelUsers(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<UserDto>(action =>
+            modelBuilder.Entity<UserEntity>(action =>
             {
                 action.HasData(
-                    new UserDto
+                    new UserEntity
                     {
                         Id = System.Guid.NewGuid(),
                         Name = "Seva",
@@ -62,7 +62,7 @@ namespace Shop.Memory
                         NumberPhone = "89173620902",
                         Password ="asd"
                     },
-                    new UserDto
+                    new UserEntity
                     {
                         Id = System.Guid.NewGuid(),
                         Name = "Seva",
@@ -76,10 +76,10 @@ namespace Shop.Memory
 
         private static void BuildModelSalePoints(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<SalePointDto>(action =>
+            modelBuilder.Entity<SalePointEntity>(action =>
             {
                 action.HasData(
-                    new SalePointDto
+                    new SalePointEntity
                     {
                         Id = System.Guid.NewGuid(),
                         Name = "Другой магазин",
@@ -87,7 +87,7 @@ namespace Shop.Memory
                         ProvidedProducts = new List<ProvidedProductDto>(),
                         
                     },
-                    new SalePointDto
+                    new SalePointEntity
                     {
                         Id = System.Guid.NewGuid(),
                         Name = "Магазин",

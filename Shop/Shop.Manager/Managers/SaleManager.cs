@@ -20,14 +20,14 @@ namespace Shop.Manager
             this._productRepository = productRepository;
         }
 
-        public async Task<List<SaleDto>> GetSales(SalesFilter filter, int skipCount, int count)
+        public async Task<List<SaleEntity>> GetSales(SalesFilter filter, int skipCount, int count)
         {
             return await _saleRepository.GetSales(filter.AllUser, filter.UserId, filter.Search, filter.SalePointId, skipCount, count);
         }
 
         public async Task<long> CreateSale(Guid? userId, Guid salePointId)
         {
-            var saleDto = new SaleDto
+            var saleDto = new SaleEntity
             {
                 Date = DateTime.UtcNow,
                 UserId = userId,

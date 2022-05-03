@@ -16,7 +16,7 @@ namespace Shop.Memory.Repository
         {
             this.dbContextFactory = dbContextFactory;
         }
-        public async Task<ProductDto> GetProductById(Guid productId)
+        public async Task<ProductEntity> GetProductById(Guid productId)
         {
             var dc = dbContextFactory.Create(typeof(ProductRepository));
             
@@ -24,7 +24,7 @@ namespace Shop.Memory.Repository
             
         }
 
-        public async Task<List<ProductDto>> GetProductsBySalePoint(Guid salePointId, string search, int skipCount, int count)
+        public async Task<List<ProductEntity>> GetProductsBySalePoint(Guid salePointId, string search, int skipCount, int count)
         {
             var dc = dbContextFactory.Create(typeof(ProductRepository));
 
@@ -43,7 +43,7 @@ namespace Shop.Memory.Repository
                                          .ToListAsync();
         }
 
-        public async Task<List<ProductDto>> GetProductByTitleOrDescription(string search, int skipCount, int count)
+        public async Task<List<ProductEntity>> GetProductByTitleOrDescription(string search, int skipCount, int count)
         {
             var dc = dbContextFactory.Create(typeof(ProductRepository));
 
@@ -59,7 +59,7 @@ namespace Shop.Memory.Repository
                                          .ToListAsync();
         }
 
-        public async Task<Guid> AddProduct(ProductDto product)
+        public async Task<Guid> AddProduct(ProductEntity product)
         {
             var dc = dbContextFactory.Create(typeof(ProductRepository));
 
@@ -73,7 +73,7 @@ namespace Shop.Memory.Repository
 
         }
 
-        public async Task<Guid> UpdateProduct(ProductDto model)
+        public async Task<Guid> UpdateProduct(ProductEntity model)
         {
             var dc = dbContextFactory.Create(typeof(ProductRepository));
 

@@ -19,7 +19,7 @@ namespace Shop.Controllers
         }
 
         [HttpPost("set")]
-        public async Task<IActionResult> SetSalePoint([FromBody] SalePointDto model)
+        public async Task<IActionResult> SetSalePoint([FromBody] SalePointEntity model)
         {
             var result = await _salePointManager.SetSalePoint(model);
 

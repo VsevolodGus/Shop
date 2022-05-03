@@ -14,7 +14,7 @@ namespace Shop.DomainTest
         {
             if (product is null)
             {
-                return new Sale(new SaleDto
+                return new Sale(new SaleEntity
                 {
                     PKID = 1,
                     SalesDatas = new List<SalesDataDto>()
@@ -22,7 +22,7 @@ namespace Shop.DomainTest
             }
             else
             {
-                return new Sale(new SaleDto
+                return new Sale(new SaleEntity
                 {
                     PKID = 1,
                     SalesDatas = new List<SalesDataDto>()
@@ -40,7 +40,7 @@ namespace Shop.DomainTest
 
         private static Product CreateTestProduct()
         {
-            return new Product(new ProductDto
+            return new Product(new ProductEntity
             {
                 ProductId = Guid.NewGuid(),
             });

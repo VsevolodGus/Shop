@@ -23,7 +23,7 @@ namespace Shop.Memory.Repository
             try
             {
                 
-                await dc.Users.AddAsync(new UserDto
+                await dc.Users.AddAsync(new UserEntity
                 {
                     Id = Guid.NewGuid(),
                     Name = name,
@@ -57,7 +57,7 @@ namespace Shop.Memory.Repository
             }
         }
 
-        public async Task<UserDto> GetUserForLogin(string name, string password)
+        public async Task<UserEntity> GetUserForLogin(string name, string password)
         {
             var dc = dbContextFactory.Create(typeof(UserRepository));
             var passwordHash = Util.CalculateSHA256Hash(password);

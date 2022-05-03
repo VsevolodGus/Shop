@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Shop.Domain.DTO
 {
-    public class SalePointDto
+    public class SalePointEntity
     {
         [Key]
         public Guid Id { get; init; }
@@ -36,8 +36,8 @@ namespace Shop.Domain.DTO
         [DefaultValue(0)]
         public long Count { get; set; }
 
-        public virtual SalePointDto SalePoint { get; init; }
+        public virtual SalePointEntity SalePoint { get; init; }
 
-        public virtual ProductDto Product { get; init; }
+        public virtual ProductEntity Product { get; init; }
     }
 }

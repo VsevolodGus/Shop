@@ -17,28 +17,16 @@ namespace Shop.Memory.Repository
             this.dbContextFactory = dbContextFactory;
         }
 
-        public async Task<long> AddSale(SaleDto model)
+        public async Task<long> AddSale(SaleEntity model)
         {
             var dc = dbContextFactory.Create(typeof(UserRepository));
 
-            await dc.AddAsync(new SaleDto()
-            {
-                SalePointId = model.SalePointId,
-                UserId = model.UserId,
-                Date = model.Date
-            });
+            await dc.AddAsync(model);
             await dc.SaveChangesAsync();
-
-
-            var sale = await dc.Sales.FirstOrDefaultAsync(c => c.IsChanled == false && c.SalePointId == model.SalePointId && c.Date == model.Date && c.UserId == model.UserId);
-            var itemSale = model.SalesDatas.ToList();
-            itemSale.ForEach(c => c.SaleId = sale.PKID);
-            await dc.SalesDatas.AddRangeAsync(itemSale);
-            await dc.SaveChangesAsync();
-            return sale.PKID;
+            return model.PKID;
         }
 
-        public async Task<SaleDto> GetSaleByPKID(long saleId)
+        public async Task<SaleEntity> GetSaleByPKID(long saleId)
         {
             var dc = dbContextFactory.Create(typeof(UserRepository));
 
@@ -46,7 +34,7 @@ namespace Shop.Memory.Repository
                            .FirstOrDefaultAsync();
         }
 
-        public async Task<List<SaleDto>> GetSales(bool allUsers, Guid? userId, string search, Guid? salePoinId, int skipCount, int count)
+        public async Task<List<SaleEntity>> GetSales(bool allUsers, Guid? userId, string search, Guid? salePoinId, int skipCount, int count)
         {
             var dc = dbContextFactory.Create(typeof(UserRepository));
 
@@ -86,17 +74,14 @@ namespace Shop.Memory.Repository
         }
 
 
-        public async Task UpdateSale(SaleDto saleDto)
+        public async Task UpdateSale(SaleEntity saleDto)
         {
             var dc = dbContextFactory.Create(typeof(UserRepository));
 
             if (!await dc.Sales.AnyAsync(c => c.IsChanled == false && c.PKID == saleDto.PKID))
                 return;
 
-
-            var sale = await dc.Sales.FirstOrDefaultAsync(c => c.IsChanled == false && c.PKID == saleDto.PKID);
-            sale.SalesDatas = saleDto.SalesDatas;
-            sale.Date = DateTime.UtcNow;
+            dc.Sales.Update(saleDto);
         }
 
 

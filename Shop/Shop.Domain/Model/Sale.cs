@@ -7,9 +7,9 @@ namespace Shop.Domain.Model
 {
     public class Sale
     {
-        private readonly SaleDto _saleDto;
+        private readonly SaleEntity _saleDto;
 
-        public Sale(SaleDto saleDto)
+        public Sale(SaleEntity saleDto)
         {
             this._saleDto = saleDto;
         }
@@ -58,9 +58,9 @@ namespace Shop.Domain.Model
 
         public static class Mapper
         {
-            public static Sale Map(SaleDto dto) => new Sale(dto);
+            public static Sale Map(SaleEntity dto) => new Sale(dto);
 
-            public static SaleDto Map(Sale domain) => domain._saleDto;
+            public static SaleEntity Map(Sale domain) => domain._saleDto;
         }
 
 

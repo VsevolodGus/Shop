@@ -8,7 +8,7 @@ namespace Shop.Domain.InterfaceRepository
     {
         Task<bool> AddUser(string name, string password);
 
-        Task<UserDto> GetUserForLogin(string name, string password);
+        Task<UserEntity> GetUserForLogin(string name, string password);
 
         Task<bool> DeleteUserById(Guid userId);
     }

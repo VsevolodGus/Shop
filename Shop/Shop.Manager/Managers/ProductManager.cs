@@ -16,7 +16,7 @@ namespace Shop.Manager
         }
 
 
-        public async Task<Guid> SetProduct(ProductDto product)
+        public async Task<Guid> SetProduct(ProductEntity product)
         {
             var productExists = await _productRepository.GetProductById(product.ProductId);
 
@@ -33,17 +33,17 @@ namespace Shop.Manager
 
 
 
-        public async Task<List<ProductDto>> GetProductBySalePoint(Guid salePointId, string search, int skipCount, int count)
+        public async Task<List<ProductEntity>> GetProductBySalePoint(Guid salePointId, string search, int skipCount, int count)
         {
             return await _productRepository.GetProductsBySalePoint(salePointId, search, skipCount, count);
         }
 
-        public async Task<List<ProductDto>> GetProductBySearch(string search, int skipCount, int count)
+        public async Task<List<ProductEntity>> GetProductBySearch(string search, int skipCount, int count)
         {
             return await _productRepository.GetProductByTitleOrDescription(search, skipCount, count);
         }
 
-        public async Task<ProductDto> GetProductById(Guid productId)
+        public async Task<ProductEntity> GetProductById(Guid productId)
         {
             return await _productRepository.GetProductById(productId);
         }

@@ -7,9 +7,9 @@ namespace Shop.Domain.Model
 {
     public class SalePoint
     {
-        private readonly SalePointDto _salePointDto;
+        private readonly SalePointEntity _salePointDto;
 
-        public SalePoint(SalePointDto salePointDto)
+        public SalePoint(SalePointEntity salePointDto)
         {
             this._salePointDto = salePointDto;
         }
@@ -72,9 +72,9 @@ namespace Shop.Domain.Model
 
         public static class Mapper
         {
-            public static SalePoint Map(SalePointDto dto) => new SalePoint(dto);
+            public static SalePoint Map(SalePointEntity dto) => new SalePoint(dto);
 
-            public static SalePointDto Map(SalePoint domain) => domain._salePointDto;
+            public static SalePointEntity Map(SalePoint domain) => domain._salePointDto;
         }
 
 

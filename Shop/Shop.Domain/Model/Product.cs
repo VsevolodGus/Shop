@@ -5,9 +5,9 @@ namespace Shop.Domain.Model
 {
     public class Product
     {
-        private readonly ProductDto _productDto;
+        private readonly ProductEntity _productDto;
 
-        public Product(ProductDto productDto)
+        public Product(ProductEntity productDto)
         {
             this._productDto = productDto;
         }
@@ -31,9 +31,9 @@ namespace Shop.Domain.Model
 
         public static class Mapper
         {
-            public static Product Map(ProductDto dto) => new Product(dto);
+            public static Product Map(ProductEntity dto) => new Product(dto);
 
-            public static ProductDto Map(Product domain) => domain._productDto;
+            public static ProductEntity Map(Product domain) => domain._productDto;
         }
     }
 }

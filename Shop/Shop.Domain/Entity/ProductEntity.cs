@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Shop.Domain.DTO
 {
-    public class ProductDto
+    public class ProductEntity
     {
         [Key]
         public Guid ProductId { get; init; }

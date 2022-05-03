@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Shop.Domain.DTO
 {
-    public class SaleDto
+    public class SaleEntity
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -23,9 +23,9 @@ namespace Shop.Domain.DTO
         [DefaultValue(false)]
         public bool IsChanled { get; set; }
 
-        public virtual SalePointDto SalePoint { get; init; }
+        public virtual SalePointEntity SalePoint { get; init; }
 
-        public virtual UserDto User { get; init; }
+        public virtual UserEntity User { get; init; }
 
         public virtual ICollection<SalesDataDto> SalesDatas { get; set; }
 
@@ -52,8 +52,8 @@ namespace Shop.Domain.DTO
 
 
 
-        public virtual ProductDto Product { get; init; }
+        public virtual ProductEntity Product { get; init; }
 
-        public virtual SaleDto Sale { get; init; }
+        public virtual SaleEntity Sale { get; init; }
     }
 }

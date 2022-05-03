@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Shop.Domain.DTO
 {
-    public class UserDto
+    public class UserEntity
     {
         [Key]
         public Guid Id { get; init; }

@@ -8,9 +8,9 @@ namespace Shop.Domain
 {
     public class User
     {
-        private readonly UserDto _userDto;
+        private readonly UserEntity _userDto;
 
-        public User(UserDto userDto)
+        public User(UserEntity userDto)
         {
             this._userDto = userDto;
         }
@@ -79,9 +79,9 @@ namespace Shop.Domain
         }
         public static class Mapper
         {
-            public static User Map(UserDto dto) => new User(dto);
+            public static User Map(UserEntity dto) => new User(dto);
 
-            public static UserDto Map(User domain) => domain._userDto;
+            public static UserEntity Map(User domain) => domain._userDto;
         }
 
     }

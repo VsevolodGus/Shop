@@ -19,7 +19,7 @@ namespace Shop.Controllers
 
 
         [HttpPost("set")]
-        public async Task<IActionResult> SetProduct([FromBody] ProductDto model)
+        public async Task<IActionResult> SetProduct([FromBody] ProductEntity model)
         {
             var result = await _productService.SetProduct(model);
 

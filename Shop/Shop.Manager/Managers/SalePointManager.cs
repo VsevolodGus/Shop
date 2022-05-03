@@ -17,7 +17,7 @@ namespace Shop.Manager
         }
 
 
-        public async Task<Guid> SetSalePoint(SalePointDto model)
+        public async Task<Guid> SetSalePoint(SalePointEntity model)
         {
             var productExists = await _salePointRepository.GetSalePointById(model.Id);
             try
@@ -55,15 +55,15 @@ namespace Shop.Manager
         }
 
 
-        public async Task<List<SalePointDto>> GetSalePointBySearch(string search, int skipCount, int count)
+        public async Task<List<SalePointEntity>> GetSalePointBySearch(string search, int skipCount, int count)
         {
             return await _salePointRepository.GetSalePointBySearch(search, skipCount, count);
         }
-        public async Task<SalePointDto> GetSalePointById(Guid salePointId)
+        public async Task<SalePointEntity> GetSalePointById(Guid salePointId)
         {
             return await _salePointRepository.GetSalePointById(salePointId);
         }
-        public async Task<List<SalePointDto>> GetListSalePointWhereHasProductById(Guid productId, int skipCount, int count)
+        public async Task<List<SalePointEntity>> GetListSalePointWhereHasProductById(Guid productId, int skipCount, int count)
         {
             return await _salePointRepository.GetSalePointByHasProduct(productId, skipCount, count);
         }
