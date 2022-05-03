@@ -64,7 +64,11 @@ namespace Shop.Controllers
 
             await _saleManager.RemoveProductFromSale(saleId, productId, productCount.GetValueOrDefault(), userId, productCount.HasValue);
 
-            return Content("OK");
+            return JsonCommonApiResult(new
+            {
+                errorText = "OK",
+                errorCode = 200,
+            });
         }
 
 
@@ -79,7 +83,12 @@ namespace Shop.Controllers
 
             var result = await _saleManager.CreateSale(userId != Guid.Empty ? userId : null, salePointId);
 
-            return Content(result.ToString());
+            return JsonCommonApiResult(new
+            {
+                errorText = "OK",
+                errorCode = 200,
+                data = result
+            });
         }
 
         [HttpPost("cancled")]
@@ -92,7 +101,11 @@ namespace Shop.Controllers
 
             await _saleManager.CancelSale(saleId, userId);
 
-            return Content("OK");
+            return JsonCommonApiResult(new
+            {
+                errorText = "OK",
+                errorCode = 200,
+            });
         }
     }
 }

@@ -22,7 +22,7 @@ namespace Shop.Manager
             var productExists = await _salePointRepository.GetSalePointById(model.Id);
             try
             {
-                if (productExists is null)
+                if (productExists is null || model.Id == default)
                 {
                     return await _salePointRepository.AddSalePoint(model);
                 }

@@ -20,7 +20,7 @@ namespace Shop.Manager
         {
             var productExists = await _productRepository.GetProductById(product.ProductId);
 
-            if (productExists is null)
+            if (productExists is null || product.ProductId == default)
             {
                 return await _productRepository.AddProduct(product);
             }

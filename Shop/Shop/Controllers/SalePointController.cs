@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Shop.Controllers
 {
-    [Route("api/salePoint/")]
+    [Route("api/sale/point/")]
     [ApiController]
     public class SalePointController : BaseShopController
     {
@@ -43,6 +43,7 @@ namespace Shop.Controllers
             }
         }
 
+
         [HttpPost("set/product")]
         public async Task<IActionResult> SetProductInAssortiment([FromBody] SettingsAddingProducts model)
         {
@@ -54,6 +55,7 @@ namespace Shop.Controllers
                 errorCode = 200
             });
         }
+
 
 
         [HttpDelete, Route("delete/empty")]

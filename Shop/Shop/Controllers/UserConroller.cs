@@ -17,7 +17,7 @@ using Shop.Manager;
 
 namespace Shop.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/user")]
     [ApiController]
     public class UserConroller : BaseShopController
     {
@@ -40,7 +40,12 @@ namespace Shop.Controllers
 
             if (tokenString is not null)
             {
-                return Ok(new { Token = tokenString });
+                return JsonCommonApiResult(new
+                {
+                    errorText = "OK",
+                    errorCode = 200,
+                    data = tokenString
+                });
             }
             else
             {
@@ -56,7 +61,11 @@ namespace Shop.Controllers
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             await _userService.LogOut(token);
-            return Content("OK");
+            return JsonCommonApiResult(new
+            {
+                errorText = "OK",
+                errorCode = 200,
+            });
         }
 
 
@@ -68,11 +77,20 @@ namespace Shop.Controllers
 
             if (token is not null)
             {
-                return JsonCommonApiResult(token);
+                return JsonCommonApiResult(new
+                {
+                    errorText = "OK",
+                    errorCode = 200,
+                    data = token
+                });
             }
             else
             {
-                return JsonCommonApiResult("NO OK");
+                return JsonCommonApiResult(new
+                {
+                    errorText = "NO OK",
+                    errorCode = 401,
+                });
             }
         }
 
@@ -84,11 +102,19 @@ namespace Shop.Controllers
 
             if (isDelete)
             {
-                return JsonCommonApiResult("OK");
+                return JsonCommonApiResult(new
+                {
+                    errorText = "OK",
+                    errorCode = 200,
+                });
             }
             else
             {
-                return JsonCommonApiResult("NO OK");
+                return JsonCommonApiResult(new
+                {
+                    errorText = "NO OK",
+                    errorCode = 401,
+                });
             }
 
         }

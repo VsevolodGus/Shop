@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace Shop.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("api/product")]
     public class ProductController : BaseShopController
     {
         private readonly ProductManager _productService;
@@ -42,6 +42,7 @@ namespace Shop.Controllers
             }
         }
 
+
         [HttpGet("byid")]
         public async Task<IActionResult> GetProductById(Guid productId)
         {
@@ -53,6 +54,7 @@ namespace Shop.Controllers
                 data = result
             });
         }
+
 
         [HttpGet("search")]
         public async Task<IActionResult> GetProductBySearch(string search, int skipCount = 0, int count = 10)
