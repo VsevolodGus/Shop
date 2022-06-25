@@ -7,6 +7,7 @@ using System.IdentityModel.Tokens.Jwt;
 using Microsoft.IdentityModel.Tokens;
 using UserUtils;
 using Shop.Domain.InterfaceRepository;
+using Shop.Domain.DTO;
 
 namespace Shop.Manager
 {
@@ -19,70 +20,57 @@ namespace Shop.Manager
             _userRepository = userRepository;
         }
 
-        public async Task<string> AuthorizationUser(string login, string password, bool isFirstLogon = false)
+        public async Task<string> AuthorizationUser(string login, string password)
         {
-            var user = await _userRepository.GetUserForLogin(login, password);
+            var user = await GetUser(login, password);
+            if (user is null)
+                return null;
 
-            if (user is not null || isFirstLogon)
-            {
-                var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("superSecretKey@2410"));
-                var signinCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
-                var tokenOptions = new JwtSecurityToken(
-                    issuer: "CodeMaze",
-                    audience: "https://localhost:5001",
-                    claims: new List<Claim>(),
-                    expires: DateTime.Now.AddMinutes(5),
-                    signingCredentials: signinCredentials
-                );
-                var tokenString = new JwtSecurityTokenHandler().WriteToken(tokenOptions);
-                AuthUtil.AddUserAuth(tokenString, user.Id);
-                return tokenString;
-            }
-
-
-            return null;
+            var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("superSecretKey@2410"));
+            var signinCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
+            var tokenOptions = new JwtSecurityToken(
+                issuer: "CodeMaze",
+                audience: "https://localhost:5001",
+                claims: new List<Claim>(),
+                expires: DateTime.Now.AddMinutes(5),
+                signingCredentials: signinCredentials
+            );
+            var tokenString = new JwtSecurityTokenHandler().WriteToken(tokenOptions);
+            AuthUtil.AddUserAuth(tokenString, user.Id);
+            return tokenString;
         }
 
-
-        public async Task LogOut(string token)
-        {
-            AuthUtil.LogOutUser(token);
-        }
 
         public async Task<string> RegistrUser(string login, string password)
         {
-            password = Util.CalculateSHA256Hash(password);
-            var user = await _userRepository.GetUserForLogin(login, password);
-            if (user is null)
-            {
-                if (await _userRepository.AddAsync(login, password) == false)
-                    return null;
+            var user = await GetUser(login, password);
+            if (user is not null)
+                return null;
 
-                return await AuthorizationUser(login, password);
-            }
+            await _userRepository.AddAsync(login, password);
 
-            return null;
+            return await AuthorizationUser(login, password);
         }
-
+        private async Task<UserEntity> GetUser(string login, string password)
+        {
+            var passwordHash = Util.CalculateSHA256Hash(password);
+            var user = await _userRepository.GetUserForLogin(login, passwordHash);
+            return user;
+        }
 
         public async Task<bool> DeleteAcountUser(string auth)
         {
-            if (AuthUtil.IsAuthUser(auth, out Guid userId) && userId != Guid.Empty)
-            {
-                AuthUtil.LogOutUser(auth);
-                await _userRepository.DeleteUserById(userId);
-                return true;
-            }
+            if (!AuthUtil.IsAuthUser(auth, out Guid userId) && userId != Guid.Empty)
+                return false;
 
-            return false;
+            AuthUtil.LogOutUser(auth);
+            await _userRepository.DeleteUserById(userId);
+            return true;
         }
-        // if (!ChekAuthToken(auth, out Guid currentUserId) && currentUserId != userId)
-        //        return Unauthorized();
 
-        //await _userRepository.DeleteUserById(userId);
-
-        //    return JsonCommonApiResult("OK");
-
-
+        public void LogOut(string token)
+        {
+            AuthUtil.LogOutUser(token);
+        }
     }
 }

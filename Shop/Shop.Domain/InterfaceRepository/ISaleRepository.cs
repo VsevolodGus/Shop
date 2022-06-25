@@ -7,8 +7,9 @@ namespace Shop.Domain.InterfaceRepository
 {
     public interface ISaleRepository
     {
-        // разделить на две функции
-        Task<List<SaleEntity>> GetSales(bool allUsers, Guid? userId, string search, Guid? SalePoinId, int skipCount, int count);
+        Task<List<SaleEntity>> GetSalesForAllUsers(Guid? salePointId, string search, int skipCount, int count);
+        Task<List<SaleEntity>> GetSales(Guid userId, Guid? salePointId, string search, int skipCount, int count);
+        Task<List<SaleEntity>> GetSalesNoRegirteredUsers(Guid? salePointId, string search, int skipCount, int count);
 
         Task<SaleEntity> GetByIdAsync(long saleId);
 

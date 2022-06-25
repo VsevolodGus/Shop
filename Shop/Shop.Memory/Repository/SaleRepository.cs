@@ -24,15 +24,14 @@ namespace Shop.Memory.Repository
             await dc.SaveChangesAsync();
             return model.PKID;
         }
+
         public async Task UpdateAsync(SaleEntity saleDto)
         {
             var dc = _dbContextFactory.Create(typeof(UserRepository));
-            // вынести в manager
-            //if (!await dc.Sales.AnyAsync(c => c.IsChanled == false && c.PKID == saleDto.PKID))
-            //    return;
             dc.Sales.Update(saleDto);
             await dc.SaveChangesAsync();
         }
+
 
 
         public async Task<SaleEntity> GetByIdAsync(long saleId)
@@ -43,69 +42,77 @@ namespace Shop.Memory.Repository
                            .FirstOrDefaultAsync();
         }
 
-        public async Task<List<SaleEntity>> GetSales(bool allUsers, Guid? userId, string search, Guid? salePoinId, int skipCount, int count)
+        public async Task<List<SaleEntity>> GetSalesForAllUsers(Guid? salePointId, string search, int skipCount, int count)
         {
             var dc = _dbContextFactory.Create(typeof(UserRepository));
 
             var query = dc.Sales.Where(c => c.IsChanled == false);
+            query = GetFilterBySalePointAndSearchStringAndOrdered(query, salePointId, search, skipCount, count);
 
-            #region Разделить функцию на две, избавившись от флага allUsers
-            if (!allUsers)
+            return await query.ToListAsync();
+        }
+
+        public async Task<List<SaleEntity>> GetSales(Guid userId, Guid? salePointId, string search, int skipCount, int count)
+        {
+            var dc = _dbContextFactory.Create(typeof(UserRepository));
+
+            var query = dc.Sales.Where(c => c.IsChanled == false
+                                            && c.UserId == userId);
+            query = GetFilterBySalePointAndSearchStringAndOrdered(query, salePointId, search, skipCount, count);
+
+            return await query.ToListAsync();
+        }
+
+        public async Task<List<SaleEntity>> GetSalesNoRegirteredUsers(Guid? salePointId, string search, int skipCount, int count)
+        {
+            var dc = _dbContextFactory.Create(typeof(UserRepository));
+
+            var query = dc.Sales.Where(c => c.IsChanled == false
+                                            && !c.UserId.HasValue);
+            query = GetFilterBySalePointAndSearchStringAndOrdered(query, salePointId, search, skipCount, count);
+
+            return await query.ToListAsync();
+        }
+
+        private IQueryable<SaleEntity> GetFilterBySalePointAndSearchStringAndOrdered(IQueryable<SaleEntity> query, Guid? salePointId, string search, int skipCount, int count)
+        {
+            if (salePointId.HasValue)
             {
-                if (userId.HasValue)
-                {
-                    query = query.Where(c => c.UserId == userId.Value);
-                }
-                else
-                {
-                    query = query.Where(c => c.UserId == null);
-                }
+                query = query.Where(c => c.SalePointId == salePointId.Value);
             }
-            #endregion
-
-            //сделать отдельную функцию где будут получать по salePointId
-            if (salePoinId.HasValue)
-            {
-                query = query.Where(c => c.SalePointId == salePoinId.Value);
-            }
-
 
             if (!string.IsNullOrEmpty(search))
             {
                 query = query.Where(c => c.SalePoint.Address.Contains(search)
                                          || c.SalePoint.Name.Contains(search)
-                                         || (c.UserId != null && c.User.Name.Contains(search)));
+                                         || c.User.Name.Contains(search));
             }
 
+            query = query.OrderByDescending(c => c.Date)
+                         .Skip(skipCount).Take(count);
 
-            return await query.OrderByDescending(c => c.Date)
-                              .Skip(skipCount).Take(count)
-                              .ToListAsync();
+            return query;
         }
-
-
-     
+        
+        
+        
         public async Task RemoveProductAsync(long saleId, Guid productId, int count, bool fullProduct)
         {
             var dc = _dbContextFactory.Create(typeof(UserRepository));
-            if (!await dc.Sales.AnyAsync(c => c.IsChanled == false && c.PKID == saleId))
-                return;
 
             var saleProducts = await dc.Sales.Where(c => c.IsChanled == false && c.PKID == saleId)
                                              .Select(c => c.SalesDatas.FirstOrDefault(v => v.ProductId == productId))
                                              .FirstOrDefaultAsync();
 
+            //вынести на уровень менеджера
             if (saleProducts.ProductQuantity < count || fullProduct)
-            {
                 dc.Remove(saleProducts);
-            }
             else
-            {
                 saleProducts.ProductQuantity -= count;
-            }
 
             await dc.SaveChangesAsync();
-
         }
+
+        
     }
 }

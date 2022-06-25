@@ -10,18 +10,18 @@ namespace Shop.Memory.Repository
 {
     internal class SalePointRepository : ISalePointRepository
     {
-        private readonly DbContextFactory dbContextFactory;
+        private readonly DbContextFactory _dbContextFactory;
 
         public SalePointRepository(DbContextFactory dbContextFactory)
         {
-            this.dbContextFactory = dbContextFactory;
+            _dbContextFactory = dbContextFactory;
         }
 
 
 
         public async Task<Guid> AddAsync(SalePointEntity model)
         {
-            var dc = dbContextFactory.Create(typeof(SalePointRepository));
+            var dc = _dbContextFactory.Create(typeof(SalePointRepository));
             await dc.SalePoints.AddAsync(model);
             await dc.SaveChangesAsync();
             return model.Id;
@@ -29,15 +29,17 @@ namespace Shop.Memory.Repository
 
         public async Task<Guid> UpdateAsync(SalePointEntity model)
         {
-            var dc = dbContextFactory.Create(typeof(SalePointRepository));
+            var dc = _dbContextFactory.Create(typeof(SalePointRepository));
             dc.SalePoints.Update(model);
             await dc.SaveChangesAsync();
             return model.Id;
         }
 
+
+        // разбить
         public async Task AddProductIntoAssortmentAsync(Guid? salePointId, Dictionary<Guid, long> products)
         {
-            var dc = dbContextFactory.Create(typeof(SalePointRepository));
+            var dc = _dbContextFactory.Create(typeof(SalePointRepository));
 
             var allSalePoints = await dc.SalePoints.Select(c => c.Id).ToListAsync();
 
@@ -67,33 +69,28 @@ namespace Shop.Memory.Repository
 
         public async Task<SalePointEntity> GetByIdAsync(Guid salePointId)
         {
-            var dc = dbContextFactory.Create(typeof(SalePointRepository));
+            var dc = _dbContextFactory.Create(typeof(SalePointRepository));
 
             return await dc.SalePoints.Where(c => c.Id == salePointId).FirstOrDefaultAsync();
         }
         public async Task<List<SalePointEntity>> GetListAsync(string search, int skipCount, int count)
         {
-            var dc = dbContextFactory.Create(typeof(SalePointRepository));
+            var dc = _dbContextFactory.Create(typeof(SalePointRepository));
 
-            if (string.IsNullOrEmpty(search))
+            var query = dc.SalePoints.AsQueryable();
+            if (!string.IsNullOrEmpty(search))
             {
-                return await dc.SalePoints.OrderBy(c => c.ProvidedProducts.Count)
+                query = query.Where(c => c.Name.Contains(search) || c.Address.Contains(search));
+            }
+
+            return await dc.SalePoints.OrderBy(c => c.ProvidedProducts.Count)
                                       .Skip(skipCount).Take(count)
                                       .ToListAsync();
-            }
-            else
-            {
-                return await dc.SalePoints.Where(c=> c.Name.Contains(search) || c.Address.Contains(search))
-                                          .OrderBy(c => c.ProvidedProducts.Count)
-                                          .Skip(skipCount).Take(count)
-                                          .ToListAsync();
-            }
-            
         }
 
         public async Task<List<SalePointEntity>> GetByHasProductCountAsync(Guid prodcutId, int skipCount, int count, long? needCount = 1)
         {
-            var dc = dbContextFactory.Create(typeof(SalePointRepository));
+            var dc = _dbContextFactory.Create(typeof(SalePointRepository));
 
             var query = dc.SalePoints.Where(c => c.ProvidedProducts.Any(c => c.ProductId == prodcutId));
 
@@ -110,7 +107,7 @@ namespace Shop.Memory.Repository
 
         public async Task DeleteEmptyProductФынтс(Guid? salePointId)
         {
-            var dc = dbContextFactory.Create(typeof(SalePointRepository));
+            var dc = _dbContextFactory.Create(typeof(SalePointRepository));
 
             var notExsistsProductInSalePoint = await dc.SalePoints.Where(c => salePointId.HasValue || c.Id == salePointId.Value)
                                                                       .SelectMany(c => c.ProvidedProducts.Where(c => c.Count < 1))

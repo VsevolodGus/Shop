@@ -60,7 +60,7 @@ namespace Shop.Controllers
         public async Task<IActionResult> LogOut(string token)
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            await _userService.LogOut(token);
+            _userService.LogOut(token);
             return JsonCommonApiResult(new
             {
                 errorText = "OK",
