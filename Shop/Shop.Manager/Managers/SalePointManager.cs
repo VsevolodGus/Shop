@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Shop.Domain.DTO;
 using Shop.Manager.Models;
 using Shop.Domain.InterfaceRepository;
+using Shop.Domain;
 
 namespace Shop.Manager
 {
@@ -55,17 +56,17 @@ namespace Shop.Manager
         }
 
 
-        public async Task<List<SalePointEntity>> GetSalePointBySearch(string search, int skipCount, int count)
+        public async Task<List<SalePointEntity>> GetSalePointBySearch(BaseFilter filter)
         {
-            return await _salePointRepository.GetListAsync(search, skipCount, count);
+            return await _salePointRepository.GetListAsync(filter.Search, filter.SkipCount, filter.Count);
         }
         public async Task<SalePointEntity> GetSalePointById(Guid salePointId)
         {
             return await _salePointRepository.GetByIdAsync(salePointId);
         }
-        public async Task<List<SalePointEntity>> GetListSalePointWhereHasProductById(Guid productId, int skipCount, int count)
+        public async Task<List<SalePointEntity>> GetListSalePointWhereHasProductById(Guid productId, BaseFilter filter)
         {
-            return await _salePointRepository.GetByHasProductCountAsync(productId, skipCount, count);
+            return await _salePointRepository.GetByHasProductCountAsync(productId, filter.SkipCount, filter.Count);
         }
 
 

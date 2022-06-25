@@ -12,6 +12,8 @@ namespace Shop.Domain.DTO
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public long PKID { get; init; }
 
+        public string Cooment { get; set; }
+
         [Required]
         public DateTime Date { get; set; }
 

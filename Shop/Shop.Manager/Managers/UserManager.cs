@@ -53,7 +53,7 @@ namespace Shop.Manager
         }
         private async Task<UserEntity> GetUser(string login, string password)
         {
-            var passwordHash = Util.CalculateSHA256Hash(password);
+            var passwordHash = Util.CalculateMD5Hash(password);
             var user = await _userRepository.GetUserForLogin(login, passwordHash);
             return user;
         }

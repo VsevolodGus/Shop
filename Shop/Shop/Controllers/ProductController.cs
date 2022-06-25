@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Shop.Domain;
 using Shop.Domain.DTO;
 using Shop.Manager;
 using System;
@@ -57,9 +58,9 @@ namespace Shop.Controllers
 
 
         [HttpGet("search")]
-        public async Task<IActionResult> GetProductBySearch(string search, int skipCount = 0, int count = 10)
+        public async Task<IActionResult> GetProductBySearch([FromQuery] BaseFilter filter)
         {
-            var result = await _productService.GetProductBySearch(search, skipCount, count);
+            var result = await _productService.GetProductBySearch(filter);
             return JsonCommonApiResult(new
             {
                 errorText = "OK",
@@ -70,9 +71,9 @@ namespace Shop.Controllers
 
 
         [HttpGet("bysalepointid")]
-        public async Task<IActionResult> GetProductBySalePoiny(Guid salePointId, string search, int skipCount = 0, int count = 10)
+        public async Task<IActionResult> GetProductBySalePoiny(Guid salePointId, [FromQuery] BaseFilter filter)
         {
-            var result = await _productService.GetProductBySalePoint(salePointId, search, skipCount, count);
+            var result = await _productService.GetProductBySalePoint(salePointId, filter);
             return JsonCommonApiResult(new
             {
                 errorText = "OK",

@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using Shop.Domain.DTO;
 using Shop.Domain.InterfaceRepository;
+using Shop.Domain;
 
 namespace Shop.Manager
 {
@@ -32,14 +33,14 @@ namespace Shop.Manager
 
 
 
-        public async Task<List<ProductEntity>> GetProductBySalePoint(Guid salePointId, string search, int skipCount, int count)
+        public async Task<List<ProductEntity>> GetProductBySalePoint(Guid salePointId, BaseFilter filter)
         {
-            return await _productRepository.GetProductsBySalePoint(salePointId, search, skipCount, count);
+            return await _productRepository.GetProductsBySalePoint(salePointId, filter.Search, filter.SkipCount, filter.Count);
         }
 
-        public async Task<List<ProductEntity>> GetProductBySearch(string search, int skipCount, int count)
+        public async Task<List<ProductEntity>> GetProductBySearch(BaseFilter filter)
         {
-            return await _productRepository.GetProductByTitleOrDescription(search, skipCount, count);
+            return await _productRepository.GetProductByTitleOrDescription(filter.Search, filter.SkipCount, filter.Count);
         }
 
         public async Task<ProductEntity> GetProductById(Guid productId)

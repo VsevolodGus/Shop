@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Shop.Domain;
 using Shop.Domain.DTO;
 using Shop.Manager;
 using Shop.Manager.Models;
@@ -73,7 +74,6 @@ namespace Shop.Controllers
         }
 
 
-
         [HttpGet("byId")]
         public async Task<IActionResult> GetSalePointById(Guid salePointId)
         {
@@ -87,12 +87,10 @@ namespace Shop.Controllers
             });
         }
 
-
-        // объединить в модельку BaseFilter(search, skipCount, count)
         [HttpGet("list/search")]
-        public async Task<IActionResult> GetSalePointBySearch(string search, int skipCount = 0, int count = 10)
+        public async Task<IActionResult> GetSalePointBySearch([FromQuery] BaseFilter filter)
         {
-            var result = await _salePointManager.GetSalePointBySearch(search, skipCount, count);
+            var result = await _salePointManager.GetSalePointBySearch(filter);
 
             return JsonCommonApiResult(new
             {
@@ -102,12 +100,10 @@ namespace Shop.Controllers
             });
         }
 
-
-        // объединить в модельку BaseFilter(search, skipCount, count)
         [HttpGet("list/has/product")]
-        public async Task<IActionResult> GetSalePointByProduct(Guid productId, int skipCount = 0, int count = 10)
+        public async Task<IActionResult> GetSalePointByProduct(Guid productId, [FromQuery] BaseFilter filter)
         {
-            var result = await _salePointManager.GetListSalePointWhereHasProductById(productId, skipCount, count);
+            var result = await _salePointManager.GetListSalePointWhereHasProductById(productId, filter);
 
             return JsonCommonApiResult(new
             {

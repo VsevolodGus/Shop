@@ -20,17 +20,9 @@ namespace Shop.Controllers
 
 
         [HttpGet("list")]
-        public async Task<IActionResult> GetSales([FromQuery] SalesFilter filter, string auth, int skipCount = 0, int count = 10)
+        public async Task<IActionResult> GetSales([FromQuery] SalesFilter filter)
         {
-            if (!AuthUtil.IsAuthUser(auth, out Guid userId)
-                && filter is null
-                && (userId == Guid.Empty && !filter.UserId.HasValue || userId != filter.UserId))
-            {
-                return Unauthorized();
-            }
-
-
-            var result = await _saleManager.GetSales(filter, skipCount, count);
+            var result = await _saleManager.GetSales(filter);
 
             return JsonCommonApiResult(new
             {
@@ -46,7 +38,7 @@ namespace Shop.Controllers
 
             public Guid ProductId { get; init; }
 
-            public long? Count { get; init; }
+            public long Count { get; init; }
         }
 
         [HttpPost("add/product")]
@@ -63,14 +55,14 @@ namespace Shop.Controllers
         }
 
         [HttpDelete("remove/product")]
-        public async Task<IActionResult> RemoveProductAsync(long saleId, Guid productId, long? productCount, string auth)
+        public async Task<IActionResult> RemoveProductAsync(long saleId, Guid productId, long productCount, string auth)
         {
             if (!AuthUtil.IsAuthUser(auth, out Guid userId))
             {
                 return Unauthorized();
             }
 
-            await _saleManager.RemoveProductFromSale(saleId, productId, productCount.GetValueOrDefault(), userId, productCount.HasValue);
+            await _saleManager.RemoveProductFromSale(saleId, productId, productCount, userId);
 
             return JsonCommonApiResult(new
             {

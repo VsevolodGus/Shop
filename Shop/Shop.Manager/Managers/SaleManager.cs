@@ -19,16 +19,16 @@ namespace Shop.Manager
             _productRepository = productRepository;
         }
 
-        public async Task<List<SaleEntity>> GetSales(SalesFilter filter, int skipCount, int count)
+        public async Task<List<SaleEntity>> GetSales(SalesFilter filter)
         {
             if (filter.AllUser)
-                return await _saleRepository.GetSalesForAllUsers(filter.SalePointId, filter.Search, skipCount, count);
+                return await _saleRepository.GetSalesForAllUsers(filter.SalePointId, filter.Search, filter.SkipCount, filter.Count);
             else
             {
                 if (filter.UserId.HasValue)
-                    return await _saleRepository.GetSales(filter.UserId.Value, filter.SalePointId, filter.Search, skipCount, count);
+                    return await _saleRepository.GetSales(filter.UserId.Value, filter.SalePointId, filter.Search, filter.SkipCount, filter.Count);
                 else
-                    return await _saleRepository.GetSalesNoRegirteredUsers(filter.SalePointId, filter.Search, skipCount, count);
+                    return await _saleRepository.GetSalesNoRegirteredUsers(filter.SalePointId, filter.Search, filter.SkipCount, filter.Count);
             }
         }
 
@@ -46,7 +46,7 @@ namespace Shop.Manager
             
         }
 
-        public async Task AddProductInSale(long saleId, Guid productId, long? count, Guid userId)
+        public async Task AddProductInSale(long saleId, Guid productId, long count, Guid userId)
         {
             // дублируется в нескольких местах, можно вынести
             var saleEntity = await _saleRepository.GetByIdAsync(saleId);
@@ -54,9 +54,8 @@ namespace Shop.Manager
                 return;
             var sale = Sale.Mapper.Map(saleEntity);
 
-
             var product = await _productRepository.GetByIdAsync(productId);
-            sale.FillSale(productId, count.Value, product.Price);
+            sale.FillSale(productId, count, product.Price);
             await _saleRepository.UpdateAsync(Sale.Mapper.Map(sale));
         }
 

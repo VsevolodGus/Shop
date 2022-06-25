@@ -1,8 +1,9 @@
-﻿using System;
+﻿using Shop.Domain;
+using System;
 
 namespace Shop.Manager.Models
 {
-    public class SalesFilter
+    public class SalesFilter : BaseFilter
     {
         public Guid? UserId { get; }
 

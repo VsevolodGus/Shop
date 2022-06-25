@@ -5,13 +5,12 @@ namespace UserUtils
 {
     public static class Util
     {
-        public static string CalculateSHA256Hash(string input)
+        public static string CalculateMD5Hash(string input)
         {
             // step 1, calculate MD5 hash from input
-
-            SHA256 sha256 = SHA256.Create();
+            var md5 = MD5.Create();
             byte[] inputBytes = Encoding.ASCII.GetBytes(input);
-            byte[] hash = sha256.ComputeHash(inputBytes);
+            byte[] hash = md5.ComputeHash(inputBytes);
 
             // step 2, convert byte array to hex string
             var sb = new StringBuilder();
