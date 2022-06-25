@@ -12,13 +12,13 @@ namespace Shop.Manager
 
         public ProductManager(IProductRepository productRepository)
         {
-            this._productRepository = productRepository;
+            _productRepository = productRepository;
         }
 
 
-        public async Task<Guid> SetProduct(ProductEntity product)
+        public async Task<Guid> SetProductAsync(ProductEntity product)
         {
-            var productExists = await _productRepository.GetProductById(product.ProductId);
+            var productExists = await _productRepository.GetByIdAsync(product.ProductId);
 
             if (productExists is null || product.ProductId == default)
             {
@@ -28,7 +28,6 @@ namespace Shop.Manager
             {
                 return await _productRepository.UpdateProduct(product);
             }
-
         }
 
 
@@ -45,7 +44,7 @@ namespace Shop.Manager
 
         public async Task<ProductEntity> GetProductById(Guid productId)
         {
-            return await _productRepository.GetProductById(productId);
+            return await _productRepository.GetByIdAsync(productId);
         }
     }
 }

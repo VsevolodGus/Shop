@@ -1,28 +1,29 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using Shop.Domain.DTO;
 using Shop.Manager;
 using Shop.Manager.Models;
-using System;
-using System.Threading.Tasks;
 
 namespace Shop.Controllers
 {
-    [Route("api/sale/point/")]
     [ApiController]
+    [Route("api/sale/point/")]
     public class SalePointController : BaseShopController
     {
-        SalePointManager _salePointManager;
+        private readonly SalePointManager _salePointManager;
 
         public SalePointController(SalePointManager salePointManager)
         {
-            this._salePointManager = salePointManager;
+            _salePointManager = salePointManager;
         }
+
+
 
         [HttpPost("set")]
         public async Task<IActionResult> SetSalePoint([FromBody] SalePointEntity model)
         {
             var result = await _salePointManager.SetSalePoint(model);
-
 
             if (result != Guid.Empty)
             {
@@ -44,6 +45,7 @@ namespace Shop.Controllers
         }
 
 
+
         [HttpPost("set/product")]
         public async Task<IActionResult> SetProductInAssortiment([FromBody] SettingsAddingProducts model)
         {
@@ -58,7 +60,7 @@ namespace Shop.Controllers
 
 
 
-        [HttpDelete, Route("delete/empty")]
+        [HttpDelete("delete/empty")]
         public async Task<IActionResult> DeleteEmptProductCalls(Guid? salePointId)
         {
             await _salePointManager.DeleteAbsenceProductFromSalePoint(salePointId);
@@ -72,7 +74,7 @@ namespace Shop.Controllers
 
 
 
-        [HttpGet, Route("byId")]
+        [HttpGet("byId")]
         public async Task<IActionResult> GetSalePointById(Guid salePointId)
         {
             var result = await _salePointManager.GetSalePointById(salePointId);
@@ -85,7 +87,9 @@ namespace Shop.Controllers
             });
         }
 
-        [HttpGet, Route("list/search")]
+
+        // объединить в модельку BaseFilter(search, skipCount, count)
+        [HttpGet("list/search")]
         public async Task<IActionResult> GetSalePointBySearch(string search, int skipCount = 0, int count = 10)
         {
             var result = await _salePointManager.GetSalePointBySearch(search, skipCount, count);
@@ -98,7 +102,9 @@ namespace Shop.Controllers
             });
         }
 
-        [HttpGet, Route("list/has/product")]
+
+        // объединить в модельку BaseFilter(search, skipCount, count)
+        [HttpGet("list/has/product")]
         public async Task<IActionResult> GetSalePointByProduct(Guid productId, int skipCount = 0, int count = 10)
         {
             var result = await _salePointManager.GetListSalePointWhereHasProductById(productId, skipCount, count);

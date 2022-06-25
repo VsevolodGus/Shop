@@ -19,7 +19,7 @@ namespace Shop.Memory.Repository
 
 
 
-        public async Task<Guid> AddSalePoint(SalePointEntity model)
+        public async Task<Guid> AddAsync(SalePointEntity model)
         {
             var dc = dbContextFactory.Create(typeof(SalePointRepository));
             await dc.SalePoints.AddAsync(model);
@@ -27,7 +27,7 @@ namespace Shop.Memory.Repository
             return model.Id;
         }
 
-        public async Task<Guid> UpdateSalePoint(SalePointEntity model)
+        public async Task<Guid> UpdateAsync(SalePointEntity model)
         {
             var dc = dbContextFactory.Create(typeof(SalePointRepository));
             dc.SalePoints.Update(model);
@@ -35,7 +35,7 @@ namespace Shop.Memory.Repository
             return model.Id;
         }
 
-        public async Task AddProductInAssortment(Guid? salePointId, Dictionary<Guid, long> products)
+        public async Task AddProductIntoAssortmentAsync(Guid? salePointId, Dictionary<Guid, long> products)
         {
             var dc = dbContextFactory.Create(typeof(SalePointRepository));
 
@@ -65,13 +65,13 @@ namespace Shop.Memory.Repository
         }
 
 
-        public async Task<SalePointEntity> GetSalePointById(Guid salePointId)
+        public async Task<SalePointEntity> GetByIdAsync(Guid salePointId)
         {
             var dc = dbContextFactory.Create(typeof(SalePointRepository));
 
             return await dc.SalePoints.Where(c => c.Id == salePointId).FirstOrDefaultAsync();
         }
-        public async Task<List<SalePointEntity>> GetSalePointBySearch(string search, int skipCount, int count)
+        public async Task<List<SalePointEntity>> GetListAsync(string search, int skipCount, int count)
         {
             var dc = dbContextFactory.Create(typeof(SalePointRepository));
 
@@ -91,7 +91,7 @@ namespace Shop.Memory.Repository
             
         }
 
-        public async Task<List<SalePointEntity>> GetSalePointByHasProduct(Guid prodcutId, int skipCount, int count, long? needCount = 1)
+        public async Task<List<SalePointEntity>> GetByHasProductCountAsync(Guid prodcutId, int skipCount, int count, long? needCount = 1)
         {
             var dc = dbContextFactory.Create(typeof(SalePointRepository));
 
@@ -108,7 +108,7 @@ namespace Shop.Memory.Repository
         }
 
 
-        public async Task DeleteEmptyProductFromSalePoints(Guid? salePointId)
+        public async Task DeleteEmptyProductФынтс(Guid? salePointId)
         {
             var dc = dbContextFactory.Create(typeof(SalePointRepository));
 

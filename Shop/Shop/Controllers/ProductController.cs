@@ -14,14 +14,14 @@ namespace Shop.Controllers
 
         public ProductController(ProductManager productService)
         {
-            this._productService = productService;
+            _productService = productService;
         }
 
 
         [HttpPost("set")]
         public async Task<IActionResult> SetProduct([FromBody] ProductEntity model)
         {
-            var result = await _productService.SetProduct(model);
+            var result = await _productService.SetProductAsync(model);
 
             if (result != Guid.Empty)
             {

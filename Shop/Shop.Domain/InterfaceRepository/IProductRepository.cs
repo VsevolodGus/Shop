@@ -7,7 +7,7 @@ namespace Shop.Domain.InterfaceRepository
 {
     public interface IProductRepository
     {
-        Task<ProductEntity> GetProductById(Guid productId);
+        Task<ProductEntity> GetByIdAsync(Guid productId);
 
         Task<List<ProductEntity>> GetProductByTitleOrDescription(string search, int skipCount, int count);
 

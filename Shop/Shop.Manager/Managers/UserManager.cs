@@ -16,7 +16,7 @@ namespace Shop.Manager
 
         public UserManager(IUserRepository userRepository)
         {
-            this._userRepository = userRepository;
+            _userRepository = userRepository;
         }
 
         public async Task<string> AuthorizationUser(string login, string password, bool isFirstLogon = false)
@@ -55,7 +55,7 @@ namespace Shop.Manager
             var user = await _userRepository.GetUserForLogin(login, password);
             if (user is null)
             {
-                if (await _userRepository.AddUser(login, password) == false)
+                if (await _userRepository.AddAsync(login, password) == false)
                     return null;
 
                 return await AuthorizationUser(login, password);

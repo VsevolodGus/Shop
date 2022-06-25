@@ -7,19 +7,18 @@ namespace Shop.Domain.InterfaceRepository
 {
     public interface ISalePointRepository
     {
+        Task<SalePointEntity> GetByIdAsync(Guid salePointId);
 
-        Task<SalePointEntity> GetSalePointById(Guid salePointId);
+        Task<List<SalePointEntity>> GetListAsync(string search, int skipCount, int count);
 
-        Task<List<SalePointEntity>> GetSalePointBySearch(string search, int skipCount, int count);
+        Task<List<SalePointEntity>> GetByHasProductCountAsync(Guid prodcutId, int skipCount, int count, long? needCount = 1);
 
-        Task<List<SalePointEntity>> GetSalePointByHasProduct(Guid prodcutId, int skipCount, int count, long? needCount = 1);
+        Task DeleteEmptyProductФынтс(Guid? salePointId);
 
-        Task DeleteEmptyProductFromSalePoints(Guid? salePointId);
+        Task<Guid> AddAsync(SalePointEntity model);
 
-        Task<Guid> AddSalePoint(SalePointEntity model);
+        Task<Guid> UpdateAsync(SalePointEntity model);
 
-        Task<Guid> UpdateSalePoint(SalePointEntity model);
-
-        Task AddProductInAssortment(Guid? salePointId, Dictionary<Guid, long> products);
+        Task AddProductIntoAssortmentAsync(Guid? salePointId, Dictionary<Guid, long> products);
     }
 }

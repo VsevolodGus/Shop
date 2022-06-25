@@ -16,7 +16,7 @@ namespace Shop.Memory.Repository
         {
             this.dbContextFactory = dbContextFactory;
         }
-        public async Task<bool> AddUser(string name, string password)
+        public async Task<bool> AddAsync(string name, string password)
         {
             var dc = dbContextFactory.Create(typeof(UserRepository));
 

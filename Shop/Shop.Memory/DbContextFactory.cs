@@ -7,16 +7,16 @@ namespace Shop.Memory
 {
     public class DbContextFactory
     {
-        private readonly IHttpContextAccessor httpContextAccessor;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
         public DbContextFactory(IHttpContextAccessor httpContextAccessor)
         {
-            this.httpContextAccessor = httpContextAccessor;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public ShopDbContext Create(Type repositoryType)
         {
-            var services = httpContextAccessor.HttpContext.RequestServices;
+            var services = _httpContextAccessor.HttpContext.RequestServices;
 
             var dbContexts = services.GetService<Dictionary<Type, ShopDbContext>>();
             if (!dbContexts.ContainsKey(repositoryType))

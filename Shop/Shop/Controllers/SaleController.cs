@@ -40,22 +40,30 @@ namespace Shop.Controllers
             });
         }
 
+        public class OperationProductInSale
+        {
+            public long SaleId { get; init; }
+
+            public Guid ProductId { get; init; }
+
+            public long? Count { get; init; }
+        }
 
         [HttpPost("add/product")]
-        public async Task<IActionResult> AddProductInSale(long saleId, Guid productId, long productCount, string auth)
+        public async Task<IActionResult> AddProductInSale([FromBody] OperationProductInSale model, string auth)
         {
             if (!AuthUtil.IsAuthUser(auth, out Guid userId))
             {
                 return Unauthorized();
             }
 
-            await _saleManager.AddProductInSale(saleId, productId, productCount, userId);
+            await _saleManager.AddProductInSale(model.SaleId, model.ProductId, model.Count, userId);
 
             return Content("OK");
         }
 
         [HttpDelete("remove/product")]
-        public async Task<IActionResult> RemoveProduct(long saleId, Guid productId, long? productCount, string auth)
+        public async Task<IActionResult> RemoveProductAsync(long saleId, Guid productId, long? productCount, string auth)
         {
             if (!AuthUtil.IsAuthUser(auth, out Guid userId))
             {
@@ -71,10 +79,8 @@ namespace Shop.Controllers
             });
         }
 
-
-
         [HttpPost("create")]
-        public async Task<IActionResult> CreateSale(Guid salePointId, string auth)
+        public async Task<IActionResult> CreateAsync(Guid salePointId, string auth)
         {
             if (!AuthUtil.IsAuthUser(auth, out Guid userId))
             {
@@ -92,7 +98,7 @@ namespace Shop.Controllers
         }
 
         [HttpPost("cancled")]
-        public async Task<IActionResult> SetCancledSale(long saleId, string auth)
+        public async Task<IActionResult> CancledAsync(long saleId, string auth)
         {
             if (!AuthUtil.IsAuthUser(auth, out Guid userId))
             {

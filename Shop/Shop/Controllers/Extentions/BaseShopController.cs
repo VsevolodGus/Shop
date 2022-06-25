@@ -1,7 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
 
 namespace Shop.Controllers
 {
@@ -9,6 +8,7 @@ namespace Shop.Controllers
     public class BaseShopController : ControllerBase
     {
         [NonAction]
+        // расширить метод, чтобы передавать код и текст ошибки
         protected IActionResult JsonCommonApiResult(object model)
         {
             return Content(JsonConvert.SerializeObject(model, new JsonSerializerSettings()

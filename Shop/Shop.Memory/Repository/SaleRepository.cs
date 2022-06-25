@@ -10,25 +10,34 @@ namespace Shop.Memory.Repository
 {
     internal class SaleRepository : ISaleRepository
     {
-        private readonly DbContextFactory dbContextFactory;
+        private readonly DbContextFactory _dbContextFactory;
 
         public SaleRepository(DbContextFactory dbContextFactory)
         {
-            this.dbContextFactory = dbContextFactory;
+            _dbContextFactory = dbContextFactory;
         }
 
         public async Task<long> AddSale(SaleEntity model)
         {
-            var dc = dbContextFactory.Create(typeof(UserRepository));
-
+            var dc = _dbContextFactory.Create(typeof(UserRepository));
             await dc.AddAsync(model);
             await dc.SaveChangesAsync();
             return model.PKID;
         }
-
-        public async Task<SaleEntity> GetSaleByPKID(long saleId)
+        public async Task UpdateAsync(SaleEntity saleDto)
         {
-            var dc = dbContextFactory.Create(typeof(UserRepository));
+            var dc = _dbContextFactory.Create(typeof(UserRepository));
+            // вынести в manager
+            //if (!await dc.Sales.AnyAsync(c => c.IsChanled == false && c.PKID == saleDto.PKID))
+            //    return;
+            dc.Sales.Update(saleDto);
+            await dc.SaveChangesAsync();
+        }
+
+
+        public async Task<SaleEntity> GetByIdAsync(long saleId)
+        {
+            var dc = _dbContextFactory.Create(typeof(UserRepository));
 
             return await dc.Sales.Where(c => c.IsChanled == false && c.PKID == saleId)
                            .FirstOrDefaultAsync();
@@ -36,11 +45,11 @@ namespace Shop.Memory.Repository
 
         public async Task<List<SaleEntity>> GetSales(bool allUsers, Guid? userId, string search, Guid? salePoinId, int skipCount, int count)
         {
-            var dc = dbContextFactory.Create(typeof(UserRepository));
+            var dc = _dbContextFactory.Create(typeof(UserRepository));
 
             var query = dc.Sales.Where(c => c.IsChanled == false);
 
-            #region Фильтрация по юзеру 
+            #region Разделить функцию на две, избавившись от флага allUsers
             if (!allUsers)
             {
                 if (userId.HasValue)
@@ -54,6 +63,7 @@ namespace Shop.Memory.Repository
             }
             #endregion
 
+            //сделать отдельную функцию где будут получать по salePointId
             if (salePoinId.HasValue)
             {
                 query = query.Where(c => c.SalePointId == salePoinId.Value);
@@ -69,25 +79,15 @@ namespace Shop.Memory.Repository
 
 
             return await query.OrderByDescending(c => c.Date)
-                             .Skip(skipCount).Take(count)
-                             .ToListAsync();
+                              .Skip(skipCount).Take(count)
+                              .ToListAsync();
         }
 
 
-        public async Task UpdateSale(SaleEntity saleDto)
+     
+        public async Task RemoveProductAsync(long saleId, Guid productId, int count, bool fullProduct)
         {
-            var dc = dbContextFactory.Create(typeof(UserRepository));
-
-            if (!await dc.Sales.AnyAsync(c => c.IsChanled == false && c.PKID == saleDto.PKID))
-                return;
-
-            dc.Sales.Update(saleDto);
-        }
-
-
-        public async Task RemoveProduct(long saleId, Guid productId, int count, bool fullProduct)
-        {
-            var dc = dbContextFactory.Create(typeof(UserRepository));
+            var dc = _dbContextFactory.Create(typeof(UserRepository));
             if (!await dc.Sales.AnyAsync(c => c.IsChanled == false && c.PKID == saleId))
                 return;
 
