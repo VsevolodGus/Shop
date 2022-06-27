@@ -5,6 +5,8 @@ using Shop.Domain.DTO;
 using Shop.Domain.Model;
 using Shop.Manager.Models;
 using Shop.Domain.InterfaceRepository;
+using Shop.Manager.Factories;
+using Shop.Domain;
 
 namespace Shop.Manager
 {
@@ -32,41 +34,30 @@ namespace Shop.Manager
             }
         }
 
-        public async Task<long> CreateSale(Guid? userId, Guid salePointId)
+        public async Task<long> CreateSale(Guid? userId, Guid salePointId, string comment)
         {
-            var saleDto = new SaleEntity
-            {
-                Date = DateTime.UtcNow,
-                UserId = userId,
-                SalePointId = salePointId,
-                SalesDatas = new List<SalesDataDto>(),
-            };
+            var saleDto = Factory.CreateSale(userId, salePointId, comment, new List<SalesDataDto>());
 
             return await _saleRepository.AddSale(saleDto);
-            
         }
 
-        public async Task AddProductInSale(long saleId, Guid productId, long count, Guid userId)
+        public async Task AddProductInSale(OperationProductInSale model, Guid userId)
         {
-            // дублируется в нескольких местах, можно вынести
-            var saleEntity = await _saleRepository.GetByIdAsync(saleId);
-            if (IsAccessToSale(saleEntity, userId))
+            var sale = await GetSaleByAccessAsync(model.SaleId, userId);
+            if (sale is null)
                 return;
-            var sale = Sale.Mapper.Map(saleEntity);
 
-            var product = await _productRepository.GetByIdAsync(productId);
-            sale.FillSale(productId, count, product.Price);
+            var product = await _productRepository.GetByIdAsync(model.ProductId);
+            sale.FillSale(model.ProductId, model.Count, product.Price);
             await _saleRepository.UpdateAsync(Sale.Mapper.Map(sale));
         }
 
 
         public async Task<bool> RemoveProductFromSale(long saleId, Guid productId, long count, Guid userId, bool fullProduct = false)
         {
-            // дублируется в нескольких местах, можно вынести
-            var saleEntity = await _saleRepository.GetByIdAsync(saleId);
-            if (IsAccessToSale(saleEntity, userId))
+            var sale = await GetSaleByAccessAsync(saleId, userId);
+            if (sale is null)
                 return false;
-            var sale = Sale.Mapper.Map(saleEntity);
 
 
             sale.RemoveItem(productId, count, fullProduct);
@@ -78,18 +69,25 @@ namespace Shop.Manager
 
         public async Task CancelSale(long saleId, Guid userId)
         {
-            // дублируется в нескольких местах, можно вынести
-            var saleEntity = await _saleRepository.GetByIdAsync(saleId);
-            if (IsAccessToSale(saleEntity, userId))
+            var sale = await GetSaleByAccessAsync(saleId, userId);
+            if (sale is null)
                 return;
-            var sale = Sale.Mapper.Map(saleEntity);
 
 
             sale.IsCancel = true;
             await _saleRepository.UpdateAsync(Sale.Mapper.Map(sale));
         }
 
-        private bool IsAccessToSale(SaleEntity sale, Guid userId)
+        private async Task<Sale> GetSaleByAccessAsync(long saleId, Guid userId)
+        {
+            var saleEntity = await _saleRepository.GetByIdAsync(saleId);
+            if (IsNotAccessToSale(saleEntity, userId))
+                return null;
+
+            return Sale.Mapper.Map(saleEntity);
+        }
+
+        private bool IsNotAccessToSale(in SaleEntity sale, in Guid userId)
         {
             return sale is null 
                    && ( (sale.UserId.HasValue && userId == Guid.Empty) 

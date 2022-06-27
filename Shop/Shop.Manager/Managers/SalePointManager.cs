@@ -14,7 +14,7 @@ namespace Shop.Manager
 
         public SalePointManager(ISalePointRepository salePointRepository)
         {
-            this._salePointRepository = salePointRepository;
+            _salePointRepository = salePointRepository;
         }
 
 

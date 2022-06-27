@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Shop.Domain;
 using Shop.Manager;
 using Shop.Manager.Models;
 using UserUtils;
@@ -32,14 +33,7 @@ namespace Shop.Controllers
             });
         }
 
-        public class OperationProductInSale
-        {
-            public long SaleId { get; init; }
-
-            public Guid ProductId { get; init; }
-
-            public long Count { get; init; }
-        }
+       
 
         [HttpPost("add/product")]
         public async Task<IActionResult> AddProductInSale([FromBody] OperationProductInSale model, string auth)
@@ -49,7 +43,7 @@ namespace Shop.Controllers
                 return Unauthorized();
             }
 
-            await _saleManager.AddProductInSale(model.SaleId, model.ProductId, model.Count, userId);
+            await _saleManager.AddProductInSale(model, userId);
 
             return Content("OK");
         }
@@ -72,14 +66,15 @@ namespace Shop.Controllers
         }
 
         [HttpPost("create")]
-        public async Task<IActionResult> CreateAsync(Guid salePointId, string auth)
+        public async Task<IActionResult> CreateAsync(Guid salePointId, string comment, string auth)
         {
             if (!AuthUtil.IsAuthUser(auth, out Guid userId))
             {
                 return Unauthorized();
             }
 
-            var result = await _saleManager.CreateSale(userId != Guid.Empty ? userId : null, salePointId);
+            Guid? currentUserId = userId != Guid.Empty ? userId : null;
+            var result = await _saleManager.CreateSale(currentUserId, salePointId, comment);
 
             return JsonCommonApiResult(new
             {
